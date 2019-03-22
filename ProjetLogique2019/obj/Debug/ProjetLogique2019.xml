@@ -1,0 +1,41 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+ProjetLogique2019
+</name>
+</assembly>
+<members>
+<member name="T:ProjetLogique2019.My.Resources.Resources">
+<summary>
+  Une classe de ressource fortement typée destinée, entre autres, à la consultation des chaînes localisées.
+</summary>
+</member>
+<member name="P:ProjetLogique2019.My.Resources.Resources.ResourceManager">
+<summary>
+  Retourne l'instance ResourceManager mise en cache utilisée par cette classe.
+</summary>
+</member>
+<member name="P:ProjetLogique2019.My.Resources.Resources.Culture">
+<summary>
+  Remplace la propriété CurrentUICulture du thread actuel pour toutes
+  les recherches de ressources à l'aide de cette classe de ressource fortement typée.
+</summary>
+</member>
+<member name="P:ProjetLogique2019.My.Resources.Resources.minisat5">
+<summary>
+  Recherche une ressource localisée de type System.Byte[].
+</summary>
+</member>
+<member name="P:ProjetLogique2019.My.Resources.Resources.Pré_rendu_INF402">
+<summary>
+  Recherche une ressource localisée de type System.Byte[].
+</summary>
+</member>
+<member name="P:ProjetLogique2019.My.Resources.Resources.TakuzuIcone">
+<summary>
+  Recherche une ressource localisée de type System.Drawing.Icon semblable à (Icône).
+</summary>
+</member>
+</members>
+</doc>
