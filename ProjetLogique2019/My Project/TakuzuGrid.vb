@@ -1,7 +1,7 @@
 ﻿Imports System.IO
 
 Public Class TakuzuGrid
-    Dim n
+    Dim n As Integer
     Dim grid() As Integer
     Public isinit As Boolean
 
@@ -35,6 +35,7 @@ Public Class TakuzuGrid
         Next
 
         CreateButtonGrid()
+        GridVerif()
     End Sub
 
     Public Sub Loadcomplete()
@@ -61,6 +62,7 @@ Public Class TakuzuGrid
             My.Forms.ProjetLogique2019.TextBoxMain.AppendText(vbCrLf + "Attention : La taille de la sortie actuelle ne correspond pas a celle de la grille en entrée")
         End Try
         CreateButtonGrid()
+        GridVerif()
     End Sub
 
     Private Function CreateButtonGrid()
@@ -107,12 +109,93 @@ Public Class TakuzuGrid
             Case 1
                 grid(sender.name) = 2
                 sender.text = ""
+                sender.backcolor = SystemColors.ControlLight
             Case 2
                 grid(sender.name) = 0
                 sender.text = "0"
         End Select
+        GridVerif()
     End Sub
 
+    Private Sub GridVerif()
+        'reset
+        For Each b In PanelButtons.Controls.OfType(Of Button)
+            If (grid(CInt(b.Name)) <> 2) Then
+                b.BackColor = Color.PaleGreen
+            End If
+        Next
+
+        'Verif regle 1
+        For i = 0 To n - 1
+            For j = 0 To n - 3
+                If (grid(j + n * i) <> 2 And grid(j + n * i) = grid(j + n * i + 1) And grid(j + n * i) = grid(j + n * i + 2)) Then
+                    PanelButtons.Controls.Find(j + n * i, True)(0).BackColor = Color.PaleVioletRed
+                    PanelButtons.Controls.Find(j + n * i + 1, True)(0).BackColor = Color.PaleVioletRed
+                    PanelButtons.Controls.Find(j + n * i + 2, True)(0).BackColor = Color.PaleVioletRed
+                End If
+            Next
+        Next
+        For i = 0 To n - 3
+            For j = 0 To n - 1
+                If (grid(j + n * i) <> 2 And grid(j + n * i) = grid(j + n * i + n) And grid(j + n * i) = grid(j + n * i + 2 * n)) Then
+                    PanelButtons.Controls.Find(j + n * i, True)(0).BackColor = Color.PaleVioletRed
+                    PanelButtons.Controls.Find(j + n * i + n, True)(0).BackColor = Color.PaleVioletRed
+                    PanelButtons.Controls.Find(j + n * i + 2 * n, True)(0).BackColor = Color.PaleVioletRed
+                End If
+            Next
+        Next
+
+        'verif regle 3
+        Dim countx1 = 0, countx0 = 0, county1 = 0, county0 = 0
+        For i = 0 To n - 1
+            For j = 0 To n - 1
+                If grid(i * n + j) = 0 Then
+                    countx0 += 1
+                End If
+                If grid(i * n + j) = 1 Then
+                    countx1 += 1
+                End If
+                If grid(j * n + i) = 0 Then
+                    county0 += 1
+                End If
+                If grid(j * n + i) = 1 Then
+                    county1 += 1
+                End If
+            Next
+            If countx0 > n / 2 Then
+                For j = 0 To n - 1
+                    If grid(i * n + j) = 0 Then
+                        PanelButtons.Controls.Find(i * n + j, True)(0).BackColor = Color.PaleVioletRed
+                    End If
+                Next
+            End If
+            If countx1 > n / 2 Then
+                For j = 0 To n - 1
+                    If grid(i * n + j) = 1 Then
+                        PanelButtons.Controls.Find(i * n + j, True)(0).BackColor = Color.PaleVioletRed
+                    End If
+                Next
+            End If
+            If county0 > n / 2 Then
+                For j = 0 To n - 1
+                    If grid(j * n + i) = 0 Then
+                        PanelButtons.Controls.Find(j * n + i, True)(0).BackColor = Color.PaleVioletRed
+                    End If
+                Next
+            End If
+            If county1 > n / 2 Then
+                For j = 0 To n - 1
+                    If grid(j * n + i) = 1 Then
+                        PanelButtons.Controls.Find(j * n + i, True)(0).BackColor = Color.PaleVioletRed
+                    End If
+                Next
+            End If
+            countx0 = 0
+            countx1 = 0
+            county0 = 0
+            county1 = 0
+        Next
+    End Sub
 
 
     Private Sub ButtonOk_Click(sender As Object, e As EventArgs) Handles ButtonOk.Click

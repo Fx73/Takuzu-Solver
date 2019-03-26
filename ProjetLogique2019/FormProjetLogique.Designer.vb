@@ -41,6 +41,7 @@ Partial Class ProjetLogique2019
         Me.ButtonODi = New System.Windows.Forms.Button()
         Me.ButtonO3s = New System.Windows.Forms.Button()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.CheckReglesMix = New System.Windows.Forms.CheckBox()
         Me.SuspendLayout()
         '
         'LabelBienvenue
@@ -167,11 +168,20 @@ Partial Class ProjetLogique2019
         resources.ApplyResources(Me.Label1, "Label1")
         Me.Label1.Name = "Label1"
         '
+        'CheckReglesMix
+        '
+        Me.CheckReglesMix.Checked = True
+        Me.CheckReglesMix.CheckState = System.Windows.Forms.CheckState.Checked
+        resources.ApplyResources(Me.CheckReglesMix, "CheckReglesMix")
+        Me.CheckReglesMix.Name = "CheckReglesMix"
+        Me.CheckReglesMix.UseVisualStyleBackColor = True
+        '
         'ProjetLogique2019
         '
         resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonQuit
+        Me.Controls.Add(Me.CheckReglesMix)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.ButtonO3s)
         Me.Controls.Add(Me.ButtonODi)
@@ -217,4 +227,5 @@ Partial Class ProjetLogique2019
     Friend WithEvents ButtonODi As Button
     Friend WithEvents ButtonO3s As Button
     Friend WithEvents Label1 As Label
+    Friend WithEvents CheckReglesMix As CheckBox
 End Class

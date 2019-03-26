@@ -82,6 +82,14 @@ Public Class ProjetLogique2019
             End Try
         End If
     End Sub
+
+    Private Sub CheckReglesSep_CheckedChanged(sender As Object, e As EventArgs) Handles CheckReglesMix.CheckedChanged
+        If CheckReglesMix.Checked = True Then
+            TextBoxMain.AppendText(vbCrLf + "Utilisation la forme conjonctive générée par la règle 2 et 3 ensemble")
+        Else
+            TextBoxMain.AppendText(vbCrLf + "Utilise la forme conjonctive générée par la règle 2 et par la règle 3 séparé" + vbCrLf + "Attention, la règle 2 pure cause des problèmes de performance" + vbCrLf + " (à éviter au dela de 10x10)")
+        End If
+    End Sub
 #End Region
 
 #Region "Grille de Takuzu"
@@ -158,55 +166,126 @@ Public Class ProjetLogique2019
                 TextBoxMain.AppendText(".")
             Next
 
-            'regle 2
-            TextBoxMain.AppendText(vbCrLf + " - - Ecriture de la regle 2 ")
-            Dim tab(n) As Boolean
-            For i1 = 0 To n - 2
-                For i2 = i1 + 1 To n - 1
-                    For k = 0 To Math.Pow(2, n) - 1
-                        For j = 0 To n - 2
-                            If tab(j) Then
-                                writer.Write("({0},{1}) + ({0},{2}) + ", j, i1, i2)
+            Dim tab(n - 1) As Boolean
+            If CheckReglesMix.Checked = True Then
+                'regle 2 + 3 
+                TextBoxMain.AppendText(vbCrLf + " - - Ecriture de la regle 2 + 3 ")
+                For i1 = 0 To n - 2
+                    For i2 = i1 + 1 To n - 1
+                        For k = 0 To Math.Pow(2, n) - 1
+                            For j = 0 To n - 2
+                                If tab(j) Then
+                                    writer.Write("({0},{1}) + ({0},{2}) + ", j, i1, i2)
+                                Else
+                                    writer.Write("-({0},{1}) + -({0},{2}) + ", j, i1, i2)
+                                End If
+                            Next
+                            If tab(n - 1) Then
+                                writer.Write("({0},{1}) + ({0},{2}) ." + vbCrLf, n - 1, i1, i2)
                             Else
-                                writer.Write("-({0},{1}) + -({0},{2}) + ", j, i1, i2)
+                                writer.Write("-({0},{1}) + -({0},{2}) ." + vbCrLf, n - 1, i1, i2)
                             End If
+                            nbclause += 1
+                            Increment(tab)
                         Next
-                        If tab(n - 1) Then
-                            writer.Write("({0},{1}) + ({0},{2}) ." + vbCrLf, n - 1, i1, i2)
-                        Else
-                            writer.Write("-({0},{1}) + -({0},{2}) ." + vbCrLf, n - 1, i1, i2)
-                        End If
-                        nbclause += 1
-                        Increment(tab)
                     Next
+                    TextBoxMain.AppendText(".")
                 Next
-                TextBoxMain.AppendText(".")
-            Next
-            ReDim tab(n)
-            For i1 = 0 To n - 2
-                For i2 = i1 + 1 To n - 1
-                    For k = 0 To Math.Pow(2, n) - 1
-                        For j = 0 To n - 2
-                            If tab(j) Then
-                                writer.Write("({1},{0}) + ({2},{0}) + ", j, i1, i2)
-                            Else
-                                writer.Write("-({1},{0}) + -({2},{0}) + ", j, i1, i2)
-                            End If
-                        Next
-                        If tab(n - 1) Then
-                            writer.Write("({1},{0}) + ({2},{0}) ." + vbCrLf, n - 1, i1, i2)
-                        Else
-                            writer.Write("-({1},{0}) + -({2},{0}) ." + vbCrLf, n - 1, i1, i2)
-                        End If
-                        nbclause += 1
-                        Increment(tab)
-                    Next
-                Next
-                TextBoxMain.AppendText(".")
-            Next
 
-            'regle 3 a faire
-            writer.Write("(0,0) +  -(0,0)")
+
+
+
+            Else
+                'regle 2
+                TextBoxMain.AppendText(vbCrLf + " - - Ecriture de la regle 2 ")
+                For i1 = 0 To n - 2
+                    For i2 = i1 + 1 To n - 1
+                        For k = 0 To Math.Pow(2, n) - 1
+                            For j = 0 To n - 2
+                                If tab(j) Then
+                                    writer.Write("({0},{1}) + ({0},{2}) + ", j, i1, i2)
+                                Else
+                                    writer.Write("-({0},{1}) + -({0},{2}) + ", j, i1, i2)
+                                End If
+                            Next
+                            If tab(n - 1) Then
+                                writer.Write("({0},{1}) + ({0},{2}) ." + vbCrLf, n - 1, i1, i2)
+                            Else
+                                writer.Write("-({0},{1}) + -({0},{2}) ." + vbCrLf, n - 1, i1, i2)
+                            End If
+                            nbclause += 1
+                            Increment(tab)
+                        Next
+                    Next
+                    TextBoxMain.AppendText(".")
+                Next
+                ReDim tab(n - 1)
+                For i1 = 0 To n - 2
+                    For i2 = i1 + 1 To n - 1
+                        For k = 0 To Math.Pow(2, n) - 1
+                            For j = 0 To n - 2
+                                If tab(j) Then
+                                    writer.Write("({1},{0}) + ({2},{0}) + ", j, i1, i2)
+                                Else
+                                    writer.Write("-({1},{0}) + -({2},{0}) + ", j, i1, i2)
+                                End If
+                            Next
+                            If tab(n - 1) Then
+                                writer.Write("({1},{0}) + ({2},{0}) ." + vbCrLf, n - 1, i1, i2)
+                            Else
+                                writer.Write("-({1},{0}) + -({2},{0}) ." + vbCrLf, n - 1, i1, i2)
+                            End If
+                            nbclause += 1
+                            Increment(tab)
+                        Next
+                    Next
+                    TextBoxMain.AppendText(".")
+                Next
+
+                'regle 3 a faire
+                ReDim tab(n - 1)
+                TextBoxMain.AppendText(vbCrLf + " - - Ecriture de la regle 3 ")
+                For j = 0 To n - 1
+                    Init3(tab)
+                    Do
+                        Dim compt = 0, k = 0
+                        While (compt < n / 2 + 1)
+                            If (tab(k)) Then
+                                If (compt <> n / 2) Then
+                                    writer.Write("({0},{1}) + ", j, k)
+                                Else
+                                    writer.Write("({0},{1}) . " + vbCrLf, j, k)
+                                End If
+                                compt += 1
+                            End If
+                            k += 1
+                        End While
+                        nbclause += 1
+                    Loop While Increment3(tab)
+                    TextBoxMain.AppendText(".")
+                Next
+                ReDim tab(n - 1)
+                For j = 0 To n - 1
+                    Init3(tab)
+                    Do
+                        Dim compt = 0, k = 0
+                        While (compt < n / 2 + 1)
+                            If (tab(k)) Then
+                                If (compt <> n / 2) Then
+                                    writer.Write("({0},{1}) + ", k, j)
+                                Else
+                                    writer.Write("({0},{1}) . " + vbCrLf, k, j)
+                                End If
+                                compt += 1
+                            End If
+                            k += 1
+                        End While
+                        nbclause += 1
+                    Loop While Increment3(tab)
+                    TextBoxMain.AppendText(".")
+                Next
+                writer.Write("(0,0) +  -(0,0)")
+            End If
 
             TextBoxMain.AppendText(vbCrLf + " - Nombre de clauses créées: " + nbclause.ToString)
         End Using
@@ -220,6 +299,40 @@ Public Class ProjetLogique2019
         ButtonCompleteTakuzu.ForeColor = Color.Brown
     End Sub
 
+    Private Function Init3(ByRef tab() As Boolean)
+        For k = 0 To n / 2
+            tab(k) = True
+        Next
+        For k = n / 2 + 1 To n - 1
+            tab(k) = False
+        Next
+    End Function
+    Private Function Increment3(ByRef tab() As Boolean) As Boolean
+        For i = 0 To tab.Length - 1
+            If (tab(i) = False) Then
+                tab(i) = True
+                If (i <> 0) Then
+                    tab(i - 1) = False
+                Else
+                    For j = 0 To tab.Length - 1
+                        If (tab(j) = False) Then
+                            If (j <> 1) Then
+                                tab(j) = True
+                                tab(j - 1) = False
+                                tab(j - 2) = False
+                                Return True
+                            Else
+                                Return False
+                            End If
+                        End If
+                    Next
+                    Return False
+                End If
+                Return True
+            End If
+        Next
+        Return False
+    End Function
     Private Function Increment(ByRef tab() As Boolean)
         For i = 0 To tab.Length - 1
             If (tab(i) = False) Then
@@ -604,12 +717,6 @@ Public Class ProjetLogique2019
 
         Return (a * n + b + 1).ToString
     End Function
-
-
-
-
-
-
 
 #End Region
 
