@@ -641,8 +641,291 @@ Public Class ProjetLogique2019
 #End Region
 
 #Region "Solver perso"
+    Public Class Pile
+        Public val As Int16 = 0
+        Public b As Boolean = True
+        Public saveVar() As Int16
+        Public saveClause()() As Integer
+        Public suiv As Pile = Nothing
+
+        Public Function noeud(ByVal i As Int16, ByVal sVar() As Int16, ByVal sClause()() As Integer) As Pile
+            Dim p = New Pile
+            With p
+                val = i
+                saveVar = sVar
+                saveClause = sClause
+            End With
+            Return p
+        End Function
+
+    End Class
+
+    Public variables() As Int16
+    Public f()() As Integer
+    Public nbClause As Integer
+
     Private Sub ButtonSatSolvePerso_Click(sender As Object, e As EventArgs) Handles ButtonSatSolvePerso.Click
-        TextBoxMain.AppendText(vbCrLf + "A venir. Il faut utiliser l'autre pour l'instant")
+        'Lecture du fichier
+        If CheckRes3Sat.Checked Then
+            If Not My.Computer.FileSystem.FileExists(Application.StartupPath() + "\Takuzu_3Sat.txt") Then
+                TextBoxMain.AppendText(vbCrLf + " * Vous devez creer d'abord un fichier au format Dimacs 3-Sat")
+                Exit Sub
+            End If
+        Else
+            If Not My.Computer.FileSystem.FileExists(Application.StartupPath() + "\Takuzu_Dimacs.txt") Then
+                TextBoxMain.AppendText(vbCrLf + " * Vous devez creer d'abord un fichier au format Dimacs n-Sat")
+                Exit Sub
+            End If
+        End If
+
+        Dim reader
+        If CheckRes3Sat.Checked Then
+            reader = New StreamReader("Takuzu_3Sat.txt")
+        Else
+            reader = New StreamReader("Takuzu_Dimacs.txt")
+        End If
+        Dim s = reader.ReadLine().Trim.Split(" ")
+        If (s(0) <> "p" And s(1) <> "cnf") Then
+            TextBoxMain.AppendText(vbCrLf + "Erreur fichier d'entrée")
+            Exit Sub
+        End If
+
+        Dim nbVar = CInt(s(2))
+        nbClause = CInt(s(3))
+        Dim f0 = reader.ReadToEnd().Trim.Split(New Char() {vbCr, vbLf}, StringSplitOptions.RemoveEmptyEntries)
+        reader.Close()
+        ReDim variables(nbVar)
+        For i = 0 To nbVar
+            variables(i) = -1
+        Next
+
+
+
+        'transformation en tableau de tableaux d'entiers via un tableau de tableaux de string
+        Dim f1(nbClause - 1)() As String
+        For i = 0 To f0.Length() - 1
+            f1(i) = f0(i).Trim.Substring(0, f0(i).Trim.Length - 1).Trim.Split()
+        Next
+
+        ReDim f(nbClause - 1)
+
+        For i = 0 To f1.Length() - 1
+            For j = 0 To f1(i).Length - 1
+                If (f(i) Is Nothing) Then
+                    Array.Resize(f(i), 1)
+                Else
+                    Array.Resize(f(i), f(i).Length + 1)
+                End If
+                If (f1(i)(j) <> "") Then
+                    f(i)(f(i).Length - 1) = CInt(f1(i)(j))
+                End If
+            Next
+        Next
+
+
+        Dim resolution = True
+        Dim save As Pile = New Pile
+
+resolutionDPLL:
+        While (nbClause > 0)
+            Dim i, j As Integer
+            While (resolution)
+                'Clauses unitaires -> Enregestriment de la variable et retrait de l'ensemble de clauses
+                i = 0
+                While (i < nbClause)
+                    If f(i).Length = 1 Then
+                        Dim a = Math.Abs(f(i)(0))
+                        If variables(a) = -1 Then
+                            TextBoxMain.AppendText(vbCrLf + "Validation par clause unitaire de " + f(i)(0).ToString)
+                            If f(i)(0) >= 0 Then
+                                variables(a) = 1
+                            Else
+                                variables(a) = 0
+                            End If
+                            RemoveAt(f, i) 'f.RemoveAt(i)
+                            nbClause -= 1
+                            If endcheck() Then
+                                Exit While
+                            End If
+                            i -= 1
+                        ElseIf variables(a) = pos(f(i)(0)) Then
+                            TextBoxMain.AppendText(vbCrLf + "Clause unitaire retirée : " + f(i)(0).ToString)
+                            RemoveAt(f, i) 'f.RemoveAt(i)
+                            nbClause -= 1
+                            If endcheck() Then
+                                Exit While
+                            End If
+                            i -= 1
+                        Else
+                            TextBoxMain.AppendText(vbCrLf + "Clause unitaire impossible " + f(i)(0).ToString)
+                            GoTo unsatisfiable
+                        End If
+                    End If
+                    i += 1
+                End While
+                resolution = False
+
+                'Verification de clause post validation unitaire
+                i = 0
+                While (i < nbClause)
+                    j = 0
+                    While (j < f(i).Length)
+                        If variables(Math.Abs(f(i)(j))) <> -1 Then
+                            resolution = True
+                            If variables(Math.Abs(f(i)(j))) = pos(f(i)(j)) Then
+                                TextBoxMain.AppendText(vbCrLf + "Clause retirée :")
+                                For k = 0 To f(i).Length - 1
+                                    TextBoxMain.AppendText(f(i)(k))
+                                Next
+                                RemoveAt(f, i) 'f.RemoveAt(i)
+                                nbClause -= 1
+                                If endcheck() Then
+                                    Exit While
+                                End If
+                                i -= 1
+                                Exit While
+                            Else
+                                TextBoxMain.AppendText(vbCrLf + "Variable retirée :" + f(i)(j).ToString)
+                                RemoveAt(f(i), j) 'f(i).RemoveAt(j)
+                                If f(i) Is Nothing Then
+                                    TextBoxMain.AppendText(vbCrLf + "Clause vide, retour")
+                                    GoTo unsatisfiable
+                                End If
+                                j -= 1
+                            End If
+                        End If
+                        j += 1
+                    End While
+                    i += 1
+                End While
+            End While
+
+            'Plus de resolution possible, attribution arbitraire
+            For i = 1 To nbVar
+                If variables(i) = -1 Then
+                    TextBoxMain.AppendText(vbCrLf + "Attribution arbitraire de " + i.ToString + " -> vrai")
+                    Empiler(i, save)
+                    variables(i) = 1
+                    resolution = True
+                    Exit For
+                End If
+            Next
+
+        End While
+
+        'Fin et conclusion du DPLL
+        TextBoxMain.AppendText(vbCrLf + "Solvé !" + vbCrLf + "Variables vraies :")
+        For i = 1 To variables.Length - 1
+            If variables(i) = 1 Then
+                TextBoxMain.AppendText(i)
+                TextBoxMain.AppendText(" ")
+            End If
+        Next
+        TextBoxMain.AppendText(vbCrLf + "Variables fausses :" + vbCrLf)
+        For i = 1 To variables.Length - 1
+            If variables(i) = 0 Then
+                TextBoxMain.AppendText(i)
+                TextBoxMain.AppendText(" ")
+            End If
+        Next
+        TextBoxMain.AppendText(vbCrLf + "Les autres variables sont libres : " + vbCrLf)
+        For i = 1 To variables.Length - 1
+            If variables(i) = -1 Then
+                TextBoxMain.AppendText(i)
+                TextBoxMain.AppendText(" ")
+            End If
+        Next
+
+        Dim writer = CreateTextFile("Takuzu_Solved_Dimacs.txt")
+        If writer Is Nothing Then Exit Sub
+
+        For j = 0 To nbVar
+            If variables(j) = 1 Then
+                writer.WriteLine(variables(j).ToString + " ")
+            ElseIf variables(j) = 0 Then
+                writer.WriteLine("-" + variables(j).ToString + " ")
+            End If
+        Next
+        writer.Close()
+        ButtonSatSolveOnline.ForeColor = Color.DarkGreen
+        ButtonSatSolvePerso.ForeColor = Color.DarkGreen
+        ButtonCompleteTakuzu.ForeColor = Color.Brown
+
+        Exit Sub
+
+
+unsatisfiable:
+        If (save.suiv Is Nothing) Then
+            TextBoxMain.AppendText(vbCrLf + "Insatisfaisable. La grille de depart n'est peut etre pas valide")
+        Else
+            Dim a = Depiler(save)
+            TextBoxMain.AppendText(vbCrLf + "Attribution arbitraire de " + a.ToString + " -> faux")
+            variables(a) = 0
+            GoTo resolutionDPLL
+        End If
+    End Sub
+
+    Private Function pos(a As Integer) As Int16
+        If a = 0 Then
+            TextBoxMain.AppendText(vbCrLf + "Erreur : 0 s'est retrouvé en variable")
+        End If
+        If a >= 0 Then
+            Return 1
+        Else
+            Return 0
+        End If
+    End Function
+
+    Private Function Empiler(i As Integer, ByRef p As Pile)
+        Dim old = p
+        p = p.noeud(i, variables.Clone, f)
+        p.suiv = old
+    End Function
+
+    Private Function Depiler(ByRef p As Pile) As Int16
+        Dim a = p.suiv.val
+        For i = 1 To variables.Length - 1
+            variables(i) = p.suiv.saveVar(i)
+        Next
+        f = p.suiv.saveClause.Clone
+        If p.suiv.b Then
+            p.suiv.b = False
+        Else
+            p.suiv = p.suiv.suiv
+        End If
+        Return a
+    End Function
+
+    Private Function endcheck() As Boolean
+        Return nbClause <= 0
+    End Function
+
+    'Fonction de retrait de ligne de tableau
+    '<System.Runtime.CompilerServices.Extension()>
+    Public Sub RemoveAt(Of T)(ByRef arr As T(), ByVal index As Integer)
+        Dim uBound = arr.GetUpperBound(0)
+        Dim lBound = arr.GetLowerBound(0)
+        Dim arrLen = uBound - lBound
+
+        If index < lBound OrElse index > uBound Then
+            Throw New ArgumentOutOfRangeException(
+        String.Format("Index must be from {0} to {1}.", lBound, uBound))
+
+        Else
+            'return nothing if it is the last element
+            If arrLen = 0 Then
+                arr = Nothing
+                Exit Sub
+            End If
+            'create an array 1 element less than the input array
+            Dim outArr(arrLen - 1) As T
+            'copy the first part of the input array
+            Array.Copy(arr, 0, outArr, 0, index)
+            'then copy the second part of the input array
+            Array.Copy(arr, index + 1, outArr, index, uBound - index)
+
+            arr = outArr
+        End If
     End Sub
 #End Region
 
