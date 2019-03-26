@@ -129,7 +129,7 @@ Public Class TakuzuGrid
         'Verif regle 1
         For i = 0 To n - 1
             For j = 0 To n - 3
-                If (grid(j + n * i) <> 2 And grid(j + n * i) = grid(j + n * i + 1) And grid(j + n * i) = grid(j + n * i + 2)) Then
+                If (grid(j + n * i) <> 2 AndAlso grid(j + n * i) = grid(j + n * i + 1) And grid(j + n * i) = grid(j + n * i + 2)) Then
                     PanelButtons.Controls.Find(j + n * i, True)(0).BackColor = Color.PaleVioletRed
                     PanelButtons.Controls.Find(j + n * i + 1, True)(0).BackColor = Color.PaleVioletRed
                     PanelButtons.Controls.Find(j + n * i + 2, True)(0).BackColor = Color.PaleVioletRed
@@ -138,7 +138,7 @@ Public Class TakuzuGrid
         Next
         For i = 0 To n - 3
             For j = 0 To n - 1
-                If (grid(j + n * i) <> 2 And grid(j + n * i) = grid(j + n * i + n) And grid(j + n * i) = grid(j + n * i + 2 * n)) Then
+                If (grid(j + n * i) <> 2 AndAlso grid(j + n * i) = grid(j + n * i + n) And grid(j + n * i) = grid(j + n * i + 2 * n)) Then
                     PanelButtons.Controls.Find(j + n * i, True)(0).BackColor = Color.PaleVioletRed
                     PanelButtons.Controls.Find(j + n * i + n, True)(0).BackColor = Color.PaleVioletRed
                     PanelButtons.Controls.Find(j + n * i + 2 * n, True)(0).BackColor = Color.PaleVioletRed
@@ -151,7 +151,7 @@ Public Class TakuzuGrid
             For j = i + 1 To n - 1
                 Dim k = 0
                 While k < n - 1
-                    If (grid(i * n + k) <> grid(j * n + k)) Then
+                    If (grid(i * n + k) = 2 OrElse grid(i * n + k) <> grid(j * n + k)) Then
                         Exit For
                     End If
                     k += 1
@@ -166,7 +166,7 @@ Public Class TakuzuGrid
             For j = i + 1 To n - 1
                 Dim k = 0
                 While k < n - 1
-                    If (grid(k * n + i) <> grid(k * n + j)) Then
+                    If (grid(k * n + i) = 2 OrElse grid(k * n + i) <> grid(k * n + j)) Then
                         Exit For
                     End If
                     k += 1

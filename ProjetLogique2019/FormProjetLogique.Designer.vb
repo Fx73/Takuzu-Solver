@@ -42,6 +42,7 @@ Partial Class ProjetLogique2019
         Me.ButtonO3s = New System.Windows.Forms.Button()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.CheckReglesMix = New System.Windows.Forms.CheckBox()
+        Me.CheckRes3Sat = New System.Windows.Forms.CheckBox()
         Me.SuspendLayout()
         '
         'LabelBienvenue
@@ -176,11 +177,20 @@ Partial Class ProjetLogique2019
         Me.CheckReglesMix.Name = "CheckReglesMix"
         Me.CheckReglesMix.UseVisualStyleBackColor = True
         '
+        'CheckRes3Sat
+        '
+        Me.CheckRes3Sat.Checked = True
+        Me.CheckRes3Sat.CheckState = System.Windows.Forms.CheckState.Checked
+        resources.ApplyResources(Me.CheckRes3Sat, "CheckRes3Sat")
+        Me.CheckRes3Sat.Name = "CheckRes3Sat"
+        Me.CheckRes3Sat.UseVisualStyleBackColor = True
+        '
         'ProjetLogique2019
         '
         resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonQuit
+        Me.Controls.Add(Me.CheckRes3Sat)
         Me.Controls.Add(Me.CheckReglesMix)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.ButtonO3s)
@@ -228,4 +238,5 @@ Partial Class ProjetLogique2019
     Friend WithEvents ButtonO3s As Button
     Friend WithEvents Label1 As Label
     Friend WithEvents CheckReglesMix As CheckBox
+    Friend WithEvents CheckRes3Sat As CheckBox
 End Class

@@ -1,6 +1,6 @@
 ﻿Imports System.Text
 Imports System.IO
-
+#Const Debug = False
 Public Class ProjetLogique2019
     Public n As Integer = TailledeGrille() 'taille de grille
     Dim pageTakuzuini As TakuzuGrid = New TakuzuGrid With {.isinit = True}
@@ -260,7 +260,23 @@ Public Class ProjetLogique2019
                             End If
                             k += 1
                         End While
-                        nbclause += 1
+
+                        compt = 0
+                        k = 0
+                        While (compt < n / 2 + 1)
+                            If (tab(k)) Then
+                                If (compt <> n / 2) Then
+                                    writer.Write("-({0},{1}) + ", j, k)
+                                Else
+                                    writer.Write("-({0},{1}) . " + vbCrLf, j, k)
+                                End If
+                                compt += 1
+                            End If
+                            k += 1
+                        End While
+                        nbclause += 2
+
+
                     Loop While Increment3(tab)
                     TextBoxMain.AppendText(".")
                 Next
@@ -280,10 +296,25 @@ Public Class ProjetLogique2019
                             End If
                             k += 1
                         End While
-                        nbclause += 1
-                    Loop While Increment3(tab)
+                        compt = 0
+                        k = 0
+                        While (compt < n / 2 + 1)
+                            If (tab(k)) Then
+                                If (compt <> n / 2) Then
+                                    writer.Write("-({0},{1}) + ", k, j)
+                                Else
+                                    writer.Write("-({0},{1}) . " + vbCrLf, k, j)
+                                End If
+                                compt += 1
+                            End If
+                            k += 1
+                        End While
+                        nbclause += 2
+                nbclause += 1
+                Loop While Increment3(tab)
                     TextBoxMain.AppendText(".")
                 Next
+
                 writer.Write("(0,0) +  -(0,0)")
             End If
 
@@ -313,25 +344,39 @@ Public Class ProjetLogique2019
                 tab(i) = True
                 If (i <> 0) Then
                     tab(i - 1) = False
+                    Return True
                 Else
-                    For j = 0 To tab.Length - 1
-                        If (tab(j) = False) Then
-                            If (j <> 1) Then
-                                tab(j) = True
-                                tab(j - 1) = False
-                                tab(j - 2) = False
-                                Return True
-                            Else
-                                Return False
-                            End If
-                        End If
-                    Next
-                    Return False
+                    Dim index = RecIncrement3(tab, 0)
+                    If (index <> -1) Then
+                        tab(index - 1) = False
+                        Return True
+                    Else
+                        Return False
+                    End If
                 End If
-                Return True
             End If
         Next
         Return False
+    End Function
+    Private Function RecIncrement3(ByRef tab() As Boolean, index As Integer) As Integer
+        For j = 0 To tab.Length - 1
+            If (tab(j) = False) Then
+                tab(j) = True
+                If (j - 1 = index) Then
+                    index = RecIncrement3(tab, j)
+                    If (index <> -1) Then
+                        tab(index - 1) = False
+                        Return index - 1
+                    Else
+                        Return -1
+                    End If
+                Else
+                    tab(j - 1) = False
+                    Return j - 1
+                End If
+            End If
+        Next
+        Return -1
     End Function
     Private Function Increment(ByRef tab() As Boolean)
         For i = 0 To tab.Length - 1
@@ -536,15 +581,27 @@ Public Class ProjetLogique2019
 
 #Region "Solver online"
     Private Sub ButtonSatSolveOnline_Click(sender As Object, e As EventArgs) Handles ButtonSatSolveOnline.Click
-        If Not My.Computer.FileSystem.FileExists(Application.StartupPath() + "\Takuzu_3Sat.txt") Then
-            TextBoxMain.AppendText(vbCrLf + " * Vous devez creer d'abord un fichier au format Dimacs 3-Sat")
-            Exit Sub
+        If CheckRes3Sat.Checked Then
+            If Not My.Computer.FileSystem.FileExists(Application.StartupPath() + "\Takuzu_3Sat.txt") Then
+                TextBoxMain.AppendText(vbCrLf + " * Vous devez creer d'abord un fichier au format Dimacs 3-Sat")
+                Exit Sub
+            End If
+        Else
+            If Not My.Computer.FileSystem.FileExists(Application.StartupPath() + "\Takuzu_Dimacs.txt") Then
+                TextBoxMain.AppendText(vbCrLf + " * Vous devez creer d'abord un fichier au format Dimacs n-Sat")
+                Exit Sub
+            End If
         End If
         My.Computer.FileSystem.WriteAllBytes(Path.GetTempPath & "\Minisat5.exe", My.Resources.minisat5, False)
 
         'Run du Sat externe
         Dim oProcess As New Process()
-        Dim oStartInfo As New ProcessStartInfo(Path.GetTempPath & "\Minisat5.exe ", Application.StartupPath() + "\Takuzu_3Sat.txt")
+        Dim oStartInfo
+        If CheckRes3Sat.Checked Then
+            oStartInfo = New ProcessStartInfo(Path.GetTempPath & "\Minisat5.exe ", Application.StartupPath() + "\Takuzu_3Sat.txt")
+        Else
+            oStartInfo = New ProcessStartInfo(Path.GetTempPath & "\Minisat5.exe ", Application.StartupPath() + "\Takuzu_Dimacs.txt")
+        End If
         oStartInfo.UseShellExecute = False
         oStartInfo.RedirectStandardOutput = True
         oProcess.StartInfo = oStartInfo
@@ -568,7 +625,7 @@ Public Class ProjetLogique2019
 
             Dim i = 50
             While s(i) <> ""
-                TextBoxMain.AppendText(s(i) + vbCrLf)
+                TextBoxMain.AppendText(vbCrLf + s(i))
                 writer.WriteLine(s(i).Substring(2))
                 i += 1
             End While
