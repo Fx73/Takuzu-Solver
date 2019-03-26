@@ -742,22 +742,20 @@ resolutionDPLL:
                             Else
                                 variables(a) = 0
                             End If
-                            RemoveAt(f, i) 'f.RemoveAt(i)
+                            RemoveAt(f, i)
                             nbClause -= 1
                             If endcheck() Then
                                 Exit While
                             End If
                             i -= 1
                         ElseIf variables(a) = pos(f(i)(0)) Then
-                            TextBoxMain.AppendText(vbCrLf + "Clause unitaire retirée : " + f(i)(0).ToString)
-                            RemoveAt(f, i) 'f.RemoveAt(i)
+                            RemoveAt(f, i)
                             nbClause -= 1
                             If endcheck() Then
                                 Exit While
                             End If
                             i -= 1
                         Else
-                            TextBoxMain.AppendText(vbCrLf + "Clause unitaire impossible " + f(i)(0).ToString)
                             GoTo unsatisfiable
                         End If
                     End If
@@ -773,11 +771,7 @@ resolutionDPLL:
                         If variables(Math.Abs(f(i)(j))) <> -1 Then
                             resolution = True
                             If variables(Math.Abs(f(i)(j))) = pos(f(i)(j)) Then
-                                TextBoxMain.AppendText(vbCrLf + "Clause retirée :")
-                                For k = 0 To f(i).Length - 1
-                                    TextBoxMain.AppendText(f(i)(k))
-                                Next
-                                RemoveAt(f, i) 'f.RemoveAt(i)
+                                RemoveAt(f, i)
                                 nbClause -= 1
                                 If endcheck() Then
                                     Exit While
@@ -785,10 +779,9 @@ resolutionDPLL:
                                 i -= 1
                                 Exit While
                             Else
-                                TextBoxMain.AppendText(vbCrLf + "Variable retirée :" + f(i)(j).ToString)
-                                RemoveAt(f(i), j) 'f(i).RemoveAt(j)
+                                RemoveAt(f(i), j)
                                 If f(i) Is Nothing Then
-                                    TextBoxMain.AppendText(vbCrLf + "Clause vide, retour")
+                                    TextBoxMain.AppendText(vbCrLf + "Clause vide, retour en arrière")
                                     GoTo unsatisfiable
                                 End If
                                 j -= 1
