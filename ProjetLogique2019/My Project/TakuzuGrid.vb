@@ -109,7 +109,6 @@ Public Class TakuzuGrid
             Case 1
                 grid(sender.name) = 2
                 sender.text = ""
-                sender.backcolor = SystemColors.ControlLight
             Case 2
                 grid(sender.name) = 0
                 sender.text = "0"
@@ -122,6 +121,8 @@ Public Class TakuzuGrid
         For Each b In PanelButtons.Controls.OfType(Of Button)
             If (grid(CInt(b.Name)) <> 2) Then
                 b.BackColor = Color.PaleGreen
+            Else
+                b.BackColor = SystemColors.ControlLight
             End If
         Next
 
@@ -144,6 +145,40 @@ Public Class TakuzuGrid
                 End If
             Next
         Next
+
+        'verif regle 2
+        For i = 0 To n - 2
+            For j = i + 1 To n - 1
+                Dim k = 0
+                While k < n - 1
+                    If (grid(i * n + k) <> grid(j * n + k)) Then
+                        Exit For
+                    End If
+                    k += 1
+                End While
+                For k = 0 To n - 1
+                    PanelButtons.Controls.Find(i * n + k, True)(0).BackColor = Color.PaleVioletRed
+                    PanelButtons.Controls.Find(j * n + k, True)(0).BackColor = Color.PaleVioletRed
+                Next
+            Next
+        Next
+        For i = 0 To n - 2
+            For j = i + 1 To n - 1
+                Dim k = 0
+                While k < n - 1
+                    If (grid(k * n + i) <> grid(k * n + j)) Then
+                        Exit For
+                    End If
+                    k += 1
+                End While
+                For k = 0 To n - 1
+                    PanelButtons.Controls.Find(k * n + i, True)(0).BackColor = Color.PaleVioletRed
+                    PanelButtons.Controls.Find(k * n + j, True)(0).BackColor = Color.PaleVioletRed
+                Next
+            Next
+        Next
+
+
 
         'verif regle 3
         Dim countx1 = 0, countx0 = 0, county1 = 0, county0 = 0
