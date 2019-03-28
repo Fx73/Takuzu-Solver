@@ -541,7 +541,7 @@
     <value>NoControl</value>
   </data>
   <data name="ButtonOCo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>565, 225</value>
+    <value>565, 200</value>
   </data>
   <data name="ButtonOCo.Size" type="System.Drawing.Size, System.Drawing">
     <value>29, 42</value>
@@ -571,7 +571,7 @@
     <value>NoControl</value>
   </data>
   <data name="ButtonODi.Location" type="System.Drawing.Point, System.Drawing">
-    <value>597, 225</value>
+    <value>597, 200</value>
   </data>
   <data name="ButtonODi.Size" type="System.Drawing.Size, System.Drawing">
     <value>29, 42</value>
@@ -601,7 +601,7 @@
     <value>NoControl</value>
   </data>
   <data name="ButtonO3s.Location" type="System.Drawing.Point, System.Drawing">
-    <value>629, 225</value>
+    <value>629, 200</value>
   </data>
   <data name="ButtonO3s.Size" type="System.Drawing.Size, System.Drawing">
     <value>29, 42</value>
@@ -625,7 +625,7 @@
     <value>3</value>
   </data>
   <data name="Label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>563, 203</value>
+    <value>565, 175</value>
   </data>
   <data name="Label1.Size" type="System.Drawing.Size, System.Drawing">
     <value>100, 23</value>
@@ -655,7 +655,7 @@
     <value>Microsoft Sans Serif, 6.75pt</value>
   </data>
   <data name="CheckReglesMix.Location" type="System.Drawing.Point, System.Drawing">
-    <value>566, 148</value>
+    <value>566, 146</value>
   </data>
   <data name="CheckReglesMix.Size" type="System.Drawing.Size, System.Drawing">
     <value>97, 31</value>
@@ -665,6 +665,9 @@
   </data>
   <data name="CheckReglesMix.Text" xml:space="preserve">
     <value>Utiliser le mixage des règles 2 et 3</value>
+  </data>
+  <data name="CheckReglesMix.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="&gt;&gt;CheckReglesMix.Name" xml:space="preserve">
     <value>CheckReglesMix</value>
@@ -685,7 +688,7 @@
     <value>NoControl</value>
   </data>
   <data name="CheckRes3Sat.Location" type="System.Drawing.Point, System.Drawing">
-    <value>565, 178</value>
+    <value>565, 266</value>
   </data>
   <data name="CheckRes3Sat.Size" type="System.Drawing.Size, System.Drawing">
     <value>97, 28</value>

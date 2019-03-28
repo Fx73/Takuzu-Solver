@@ -171,8 +171,6 @@ Partial Class ProjetLogique2019
         '
         'CheckReglesMix
         '
-        Me.CheckReglesMix.Checked = True
-        Me.CheckReglesMix.CheckState = System.Windows.Forms.CheckState.Checked
         resources.ApplyResources(Me.CheckReglesMix, "CheckReglesMix")
         Me.CheckReglesMix.Name = "CheckReglesMix"
         Me.CheckReglesMix.UseVisualStyleBackColor = True

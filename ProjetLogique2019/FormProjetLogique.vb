@@ -41,13 +41,24 @@ Public Class ProjetLogique2019
 
     Private Sub Buttonregles_Click(sender As Object, e As EventArgs) Handles Buttonregles.Click
         TextBoxMain.AppendText(vbCrLf + "Règles du Takuzu :
- ● autant de 1 et de 0 sur chaque ligne et sur chaque colonne
  ● pas plus de 2 chiffres identiques côte à côte
+ ● autant de 1 et de 0 sur chaque ligne et sur chaque colonne
  ● 2 lignes ou 2 colonnes ne peuvent être identiques")
     End Sub
 
     Private Sub ButtonRegleConj_Click(sender As Object, e As EventArgs) Handles ButtonRegleConj.Click
-        TextBoxMain.AppendText(vbCrLf + "En fait ca rend pas fou l'affichage mathematique, je mettrai peut etre une image")
+        TextBoxMain.AppendText(vbCrLf + "Regle 1 :
+  n   n-2
+  ⋀    ⋀   (Xi,j V Xi,j+1 V Xi,j+2) ∧ (¬Xi,j v ¬Xi,j+1 v ¬ Xi,j+2) ∧ (Xj,i v Xj+1,i v Xj+2,i) ∧(¬Xj,i v ¬Xj+1,i v ¬Xj+2,i)
+ i=1  j=1")
+        TextBoxMain.AppendText(vbCrLf + "Regle 2 :
+  n    n     n              n
+  ⋀    ⋀  ¬[ ⋀(Xik <=> Xjk) ⋀(Xki <=> Xkj)]
+ i=1  j=i   k=1            k=1")
+        TextBoxMain.AppendText(vbCrLf + "Regle 3 :
+  n                   n/2+1   n/2+1    n/2+1   n/2+1
+  ⋀   ∀(k1,…,kn2+1) [ ⋁(Xikj) ⋁(¬Xikj) ⋁(Xjki) ⋁(¬Xjki)]
+ i=1                  j=1     j=1      j=1     j=1")
     End Sub
 
     Private Sub ButtonOCo_Click(sender As Object, e As EventArgs) Handles ButtonOCo.Click
@@ -168,7 +179,7 @@ Public Class ProjetLogique2019
 
             Dim tab(n - 1) As Boolean
             If CheckReglesMix.Checked = True Then
-                'regle 2 + 3 
+                'regle 2 + 3 non trouvée
                 TextBoxMain.AppendText(vbCrLf + " - - Ecriture de la regle 2 + 3 ")
                 For i1 = 0 To n - 2
                     For i2 = i1 + 1 To n - 1
