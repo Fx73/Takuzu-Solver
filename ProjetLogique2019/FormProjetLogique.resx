@@ -151,7 +151,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;LabelBienvenue.ZOrder" xml:space="preserve">
-    <value>19</value>
+    <value>21</value>
   </data>
   <data name="ButtonPreRap.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Right</value>
@@ -160,7 +160,7 @@
     <value>Microsoft Sans Serif, 8.25pt, style=Bold</value>
   </data>
   <data name="ButtonPreRap.Location" type="System.Drawing.Point, System.Drawing">
-    <value>565, 313</value>
+    <value>565, 327</value>
   </data>
   <data name="ButtonPreRap.Size" type="System.Drawing.Size, System.Drawing">
     <value>93, 42</value>
@@ -181,13 +181,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;ButtonPreRap.ZOrder" xml:space="preserve">
-    <value>18</value>
+    <value>20</value>
   </data>
   <data name="Buttonregles.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Right</value>
   </data>
   <data name="Buttonregles.Location" type="System.Drawing.Point, System.Drawing">
-    <value>565, 52</value>
+    <value>565, 84</value>
   </data>
   <data name="Buttonregles.Size" type="System.Drawing.Size, System.Drawing">
     <value>93, 42</value>
@@ -208,13 +208,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;Buttonregles.ZOrder" xml:space="preserve">
-    <value>17</value>
+    <value>19</value>
   </data>
   <data name="ButtonRegleConj.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Right</value>
   </data>
   <data name="ButtonRegleConj.Location" type="System.Drawing.Point, System.Drawing">
-    <value>565, 100</value>
+    <value>565, 128</value>
   </data>
   <data name="ButtonRegleConj.Size" type="System.Drawing.Size, System.Drawing">
     <value>93, 42</value>
@@ -235,7 +235,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;ButtonRegleConj.ZOrder" xml:space="preserve">
-    <value>16</value>
+    <value>18</value>
   </data>
   <data name="ButtonTakuzuCreate.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 8.25pt, style=Bold</value>
@@ -265,7 +265,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;ButtonTakuzuCreate.ZOrder" xml:space="preserve">
-    <value>15</value>
+    <value>17</value>
   </data>
   <data name="Buttoncreerconjonctive.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 8.25pt, style=Bold</value>
@@ -295,7 +295,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;Buttoncreerconjonctive.ZOrder" xml:space="preserve">
-    <value>14</value>
+    <value>16</value>
   </data>
   <data name="Buttondimacs.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 8.25pt, style=Bold</value>
@@ -325,7 +325,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;Buttondimacs.ZOrder" xml:space="preserve">
-    <value>13</value>
+    <value>15</value>
   </data>
   <data name="Button3sat.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 8.25pt, style=Bold</value>
@@ -355,7 +355,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;Button3sat.ZOrder" xml:space="preserve">
-    <value>12</value>
+    <value>14</value>
   </data>
   <data name="ButtonDelAll.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Left</value>
@@ -382,7 +382,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;ButtonDelAll.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>13</value>
   </data>
   <data name="ButtonQuit.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Right</value>
@@ -409,7 +409,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;ButtonQuit.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>12</value>
   </data>
   <data name="TextBoxMain.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Left, Right</value>
@@ -429,9 +429,6 @@
   <data name="TextBoxMain.Text" xml:space="preserve">
     <value>En construction</value>
   </data>
-  <data name="TextBoxMain.WordWrap" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
   <data name="&gt;&gt;TextBoxMain.Name" xml:space="preserve">
     <value>TextBoxMain</value>
   </data>
@@ -442,7 +439,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;TextBoxMain.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>11</value>
   </data>
   <data name="ButtonSatSolveOnline.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 8.25pt, style=Bold</value>
@@ -472,7 +469,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;ButtonSatSolveOnline.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>10</value>
   </data>
   <data name="ButtonSatSolvePerso.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 8.25pt, style=Bold</value>
@@ -502,7 +499,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;ButtonSatSolvePerso.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>9</value>
   </data>
   <data name="ButtonCompleteTakuzu.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 8.25pt, style=Bold</value>
@@ -532,7 +529,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;ButtonCompleteTakuzu.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>8</value>
   </data>
   <data name="ButtonOCo.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 6pt, style=Bold</value>
@@ -541,7 +538,7 @@
     <value>NoControl</value>
   </data>
   <data name="ButtonOCo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>565, 200</value>
+    <value>565, 196</value>
   </data>
   <data name="ButtonOCo.Size" type="System.Drawing.Size, System.Drawing">
     <value>29, 42</value>
@@ -562,7 +559,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;ButtonOCo.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>7</value>
   </data>
   <data name="ButtonODi.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 6pt, style=Bold</value>
@@ -571,7 +568,7 @@
     <value>NoControl</value>
   </data>
   <data name="ButtonODi.Location" type="System.Drawing.Point, System.Drawing">
-    <value>597, 200</value>
+    <value>597, 196</value>
   </data>
   <data name="ButtonODi.Size" type="System.Drawing.Size, System.Drawing">
     <value>29, 42</value>
@@ -592,7 +589,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;ButtonODi.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>6</value>
   </data>
   <data name="ButtonO3s.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 6pt, style=Bold</value>
@@ -601,7 +598,7 @@
     <value>NoControl</value>
   </data>
   <data name="ButtonO3s.Location" type="System.Drawing.Point, System.Drawing">
-    <value>629, 200</value>
+    <value>629, 196</value>
   </data>
   <data name="ButtonO3s.Size" type="System.Drawing.Size, System.Drawing">
     <value>29, 42</value>
@@ -622,10 +619,10 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;ButtonO3s.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>5</value>
   </data>
   <data name="Label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>565, 175</value>
+    <value>565, 171</value>
   </data>
   <data name="Label1.Size" type="System.Drawing.Size, System.Drawing">
     <value>100, 23</value>
@@ -649,13 +646,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;Label1.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>4</value>
   </data>
   <data name="CheckReglesMix.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 6.75pt</value>
   </data>
   <data name="CheckReglesMix.Location" type="System.Drawing.Point, System.Drawing">
-    <value>566, 146</value>
+    <value>565, 294</value>
   </data>
   <data name="CheckReglesMix.Size" type="System.Drawing.Size, System.Drawing">
     <value>97, 31</value>
@@ -679,7 +676,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;CheckReglesMix.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>3</value>
   </data>
   <data name="CheckRes3Sat.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 6.75pt</value>
@@ -709,6 +706,57 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;CheckRes3Sat.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="MyProgressBar.Location" type="System.Drawing.Point, System.Drawing">
+    <value>565, 55</value>
+  </data>
+  <data name="MyProgressBar.Size" type="System.Drawing.Size, System.Drawing">
+    <value>61, 23</value>
+  </data>
+  <data name="MyProgressBar.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
+  </data>
+  <data name="&gt;&gt;MyProgressBar.Name" xml:space="preserve">
+    <value>MyProgressBar</value>
+  </data>
+  <data name="&gt;&gt;MyProgressBar.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ProgressBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;MyProgressBar.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;MyProgressBar.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="ButtonStop.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="ButtonStop.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 6pt</value>
+  </data>
+  <data name="ButtonStop.Location" type="System.Drawing.Point, System.Drawing">
+    <value>628, 54</value>
+  </data>
+  <data name="ButtonStop.Size" type="System.Drawing.Size, System.Drawing">
+    <value>30, 25</value>
+  </data>
+  <data name="ButtonStop.TabIndex" type="System.Int32, mscorlib">
+    <value>22</value>
+  </data>
+  <data name="ButtonStop.Text" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="&gt;&gt;ButtonStop.Name" xml:space="preserve">
+    <value>ButtonStop</value>
+  </data>
+  <data name="&gt;&gt;ButtonStop.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ButtonStop.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;ButtonStop.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

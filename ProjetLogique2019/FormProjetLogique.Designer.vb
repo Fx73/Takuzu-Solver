@@ -43,6 +43,8 @@ Partial Class ProjetLogique2019
         Me.Label1 = New System.Windows.Forms.Label()
         Me.CheckReglesMix = New System.Windows.Forms.CheckBox()
         Me.CheckRes3Sat = New System.Windows.Forms.CheckBox()
+        Me.MyProgressBar = New System.Windows.Forms.ProgressBar()
+        Me.ButtonStop = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'LabelBienvenue
@@ -183,11 +185,26 @@ Partial Class ProjetLogique2019
         Me.CheckRes3Sat.Name = "CheckRes3Sat"
         Me.CheckRes3Sat.UseVisualStyleBackColor = True
         '
+        'MyProgressBar
+        '
+        resources.ApplyResources(Me.MyProgressBar, "MyProgressBar")
+        Me.MyProgressBar.MarqueeAnimationSpeed = 0
+        Me.MyProgressBar.Name = "MyProgressBar"
+        Me.MyProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee
+        '
+        'ButtonStop
+        '
+        resources.ApplyResources(Me.ButtonStop, "ButtonStop")
+        Me.ButtonStop.Name = "ButtonStop"
+        Me.ButtonStop.UseVisualStyleBackColor = True
+        '
         'ProjetLogique2019
         '
         resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.CancelButton = Me.ButtonQuit
+        Me.Controls.Add(Me.ButtonStop)
+        Me.Controls.Add(Me.MyProgressBar)
         Me.Controls.Add(Me.CheckRes3Sat)
         Me.Controls.Add(Me.CheckReglesMix)
         Me.Controls.Add(Me.Label1)
@@ -237,4 +254,6 @@ Partial Class ProjetLogique2019
     Friend WithEvents Label1 As Label
     Friend WithEvents CheckReglesMix As CheckBox
     Friend WithEvents CheckRes3Sat As CheckBox
+    Friend WithEvents MyProgressBar As ProgressBar
+    Friend WithEvents ButtonStop As Button
 End Class

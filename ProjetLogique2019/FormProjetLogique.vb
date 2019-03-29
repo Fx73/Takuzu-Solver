@@ -1,5 +1,8 @@
 ﻿Imports System.Text
 Imports System.IO
+Imports System.Threading
+
+
 #Const Debug = False
 Public Class ProjetLogique2019
     Public n As Integer = TailledeGrille() 'taille de grille
@@ -24,6 +27,14 @@ Public Class ProjetLogique2019
     End Sub
     Private Sub ButtonQuit_Click(sender As Object, e As EventArgs) Handles ButtonQuit.Click
         Me.Close()
+    End Sub
+    Private Shadows Sub Closing() Handles MyBase.Closing
+        If MyWorker.IsAlive Then
+            If MyWorker.ThreadState = ThreadState.Suspended Then
+                MyWorker.Resume()
+            End If
+            MyWorker.Abort()
+        End If
     End Sub
 #End Region
 
@@ -101,6 +112,65 @@ Public Class ProjetLogique2019
             TextBoxMain.AppendText(vbCrLf + "Utilise la forme conjonctive générée par la règle 2 et par la règle 3 séparé" + vbCrLf + "Attention, la règle 2 pure cause des problèmes de performance" + vbCrLf + " (à éviter au dela de 10x10)")
         End If
     End Sub
+
+    Private Sub ButtonStop_Click(sender As Object, e As EventArgs) Handles ButtonStop.Click
+        If MyWorker.ThreadState = ThreadState.Running Then
+            MyWorker.Suspend()
+            ButtonStop.Text = "Redo"
+            MyProgressBar.MarqueeAnimationSpeed = 0
+            Exit Sub
+        End If
+        If MyWorker.ThreadState = ThreadState.Suspended Then
+            MyWorker.Resume()
+            ButtonStop.Text = "Stop"
+            MyProgressBar.MarqueeAnimationSpeed = 20
+            Exit Sub
+        End If
+    End Sub
+    Private Sub CheckRes3Sat_CheckedChanged(sender As Object, e As EventArgs) Handles CheckRes3Sat.CheckedChanged
+        If CheckRes3Sat.Checked Then
+            If Button3sat.ForeColor = Color.Black Then
+                If Buttondimacs.ForeColor = Color.Brown Or ButtonO3s.ForeColor = Color.Brown Then
+                    Button3sat.ForeColor = Color.Brown
+                Else
+                    Button3sat.ForeColor = Color.Green
+                End If
+            End If
+        Else
+            If Button3sat.ForeColor = Color.Brown Then
+                Button3sat.ForeColor = Color.Black
+            End If
+        End If
+    End Sub
+#End Region
+
+#Region "Threading"
+    Public MyWorker As System.Threading.Thread = New Threading.Thread(AddressOf CreateConj)
+    'Public WorkerConj As System.Threading.Thread = New Threading.Thread(AddressOf CreateConj)
+    'Public WorkerDimacs As System.Threading.Thread = New Threading.Thread(AddressOf CreateDimacs)
+    'Public Worker3Sat As System.Threading.Thread = New Threading.Thread(AddressOf Create3Sat)
+    'Public WorkerSolveMinisat As System.Threading.Thread = New Threading.Thread(AddressOf ResolveMiniSat)
+    'Public WorkerSolvePerso As System.Threading.Thread = New Threading.Thread(AddressOf ResolvePerso)
+
+    Delegate Sub SetTextDelegate(ByVal TB As TextBox, ByVal sText As String)
+    Delegate Sub SetStopDelegate()
+
+    Private SetText As New SetTextDelegate(AddressOf SetRecuTextBoxText)
+    Private Sub SetRecuTextBoxText(ByVal TB As TextBox, ByVal sText As String)
+        TB.AppendText(sText)
+    End Sub
+    Private EnableStopDelegate As New SetStopDelegate(AddressOf EnableStop)
+    Private Sub EnableStop()
+        MyProgressBar.MarqueeAnimationSpeed = 20
+        ButtonStop.Text = "Stop"
+        ButtonStop.Enabled = True
+    End Sub
+    Private DisableStopDelegate As New SetStopDelegate(AddressOf DisableStop)
+    Private Sub DisableStop()
+        MyProgressBar.MarqueeAnimationSpeed = 0
+        ButtonStop.Enabled = False
+    End Sub
+
 #End Region
 
 #Region "Grille de Takuzu"
@@ -140,14 +210,25 @@ Public Class ProjetLogique2019
             TextBoxMain.AppendText(vbCrLf + " * Vous devez creer d'abord une grille initiale de Takuzu")
             Exit Sub
         End If
+        If (MyWorker.IsAlive) Then
+            MsgBox("Une autre opération est déjà en cours", vbInformation)
+        Else
+            MyWorker = New Thread(AddressOf CreateConj)
+            MyWorker.Start()
+            EnableStop()
+        End If
+    End Sub
+
+    Public Function CreateConj()
+
 
         Using writer = CreateTextFile("Takuzu_Conjonctive.txt")
 
-            TextBoxMain.AppendText(vbCrLf + " - Nombre supposé de variables (NxN) : " + (n * n).ToString)
+            TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + " - Nombre supposé de variables (NxN) : " + (n * n).ToString})
             Dim nbclause = 0
 
             'Preremplissage
-            TextBoxMain.AppendText(vbCrLf + " - - Preremplissage ")
+            TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + " - - Preremplissage "})
             Dim reader = New StreamReader(Application.StartupPath() + "\Takuzu_Grille.txt")
             Dim i = 0, j = 0
             While Not reader.EndOfStream
@@ -155,10 +236,10 @@ Public Class ProjetLogique2019
                 For i = 0 To s.Length - 1
                     If s(i) = "0" Then
                         writer.WriteLine("-({0},{1}) .", j, i)
-                        TextBoxMain.AppendText(".")
+                        TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, "."})
                     ElseIf s(i) = "1" Then
                         writer.WriteLine("({0},{1}) .", j, i)
-                        TextBoxMain.AppendText(".")
+                        TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, "."})
                     ElseIf s(i) <> "2" Then
                         MsgBox("Attention, la grille de départ est érroné")
                     End If
@@ -168,19 +249,19 @@ Public Class ProjetLogique2019
             reader.Close()
 
             'regle 1
-            TextBoxMain.AppendText(vbCrLf + " - - Ecriture de la regle 1 ")
+            TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + " - - Ecriture de la regle 1 "})
             For i = 0 To n - 1
                 For j = 0 To n - 3
                     writer.Write("(({0},{1}) + ({0},{2}) + ({0},{3})) ." + vbCrLf + "(-({0},{1}) + -({0},{2}) + -({0},{3}))." + vbCrLf + "(({1},{0}) + ({2},{0}) + ({3},{0})) ." + vbCrLf + "(-({1},{0}) + -({2},{0}) + -({3},{0})) ." + vbCrLf, i, j, j + 1, j + 2)
                     nbclause += 4
                 Next
-                TextBoxMain.AppendText(".")
+                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, "."})
             Next
 
             Dim tab(n - 1) As Boolean
             If CheckReglesMix.Checked = True Then
                 'regle 2 + 3 non trouvée
-                TextBoxMain.AppendText(vbCrLf + " - - Ecriture de la regle 2 + 3 ")
+                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + " - - Ecriture de la regle 2 + 3 "})
                 For i1 = 0 To n - 2
                     For i2 = i1 + 1 To n - 1
                         For k = 0 To Math.Pow(2, n) - 1
@@ -200,7 +281,7 @@ Public Class ProjetLogique2019
                             Increment(tab)
                         Next
                     Next
-                    TextBoxMain.AppendText(".")
+                    TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, "."})
                 Next
 
 
@@ -208,7 +289,7 @@ Public Class ProjetLogique2019
 
             Else
                 'regle 2
-                TextBoxMain.AppendText(vbCrLf + " - - Ecriture de la regle 2 ")
+                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + " - - Ecriture de la regle 2 "})
                 For i1 = 0 To n - 2
                     For i2 = i1 + 1 To n - 1
                         For k = 0 To Math.Pow(2, n) - 1
@@ -228,7 +309,7 @@ Public Class ProjetLogique2019
                             Increment(tab)
                         Next
                     Next
-                    TextBoxMain.AppendText(".")
+                    TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, "."})
                 Next
                 ReDim tab(n - 1)
                 For i1 = 0 To n - 2
@@ -250,12 +331,12 @@ Public Class ProjetLogique2019
                             Increment(tab)
                         Next
                     Next
-                    TextBoxMain.AppendText(".")
+                    TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, "."})
                 Next
 
                 'regle 3 a faire
                 ReDim tab(n - 1)
-                TextBoxMain.AppendText(vbCrLf + " - - Ecriture de la regle 3 ")
+                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + " - - Ecriture de la regle 3 "})
                 For j = 0 To n - 1
                     Init3(tab)
                     Do
@@ -289,7 +370,7 @@ Public Class ProjetLogique2019
 
 
                     Loop While Increment3(tab)
-                    TextBoxMain.AppendText(".")
+                    TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, "."})
                 Next
                 ReDim tab(n - 1)
                 For j = 0 To n - 1
@@ -321,17 +402,16 @@ Public Class ProjetLogique2019
                             k += 1
                         End While
                         nbclause += 2
-                nbclause += 1
-                Loop While Increment3(tab)
-                    TextBoxMain.AppendText(".")
+                        nbclause += 1
+                    Loop While Increment3(tab)
+                    TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, "."})
                 Next
 
                 writer.Write("(0,0) +  -(0,0)")
             End If
 
-            TextBoxMain.AppendText(vbCrLf + " - Nombre de clauses créées: " + nbclause.ToString)
+            TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + " - Nombre de clauses créées: " + nbclause.ToString})
         End Using
-
         ButtonOCo.ForeColor = Color.DarkGreen
         Buttoncreerconjonctive.ForeColor = Color.DarkGreen
         Buttondimacs.ForeColor = Color.Brown
@@ -339,7 +419,9 @@ Public Class ProjetLogique2019
         ButtonSatSolveOnline.ForeColor = Color.Brown
         ButtonSatSolvePerso.ForeColor = Color.Brown
         ButtonCompleteTakuzu.ForeColor = Color.Brown
-    End Sub
+        Invoke(DisableStopDelegate)
+
+    End Function
 
     Private Function Init3(ByRef tab() As Boolean)
         For k = 0 To n / 2
@@ -407,10 +489,21 @@ Public Class ProjetLogique2019
             TextBoxMain.AppendText(vbCrLf + " * Vous devez creer d'abord un fichier de logique conjonctive")
             Exit Sub
         End If
-
+        If (MyWorker.IsAlive) Then
+            MsgBox("Une autre opération est déjà en cours", vbInformation)
+        Else
+            MyWorker = New Thread(AddressOf CreateDimacs)
+            MyWorker.Start()
+            EnableStop()
+        End If
+    End Sub
+    Public Function CreateDimacs()
         Dim reader = New StreamReader(Application.StartupPath() + "\Takuzu_Conjonctive.txt")
         Dim writer = CreateTextFile("Takuzu_Dimacs.txt")
-        If writer Is Nothing Then Exit Sub
+        If writer Is Nothing Then
+            Invoke(DisableStopDelegate)
+            Exit Function
+        End If
 
         'Ecriture de l'en-tete
         Dim m = 1
@@ -480,22 +573,22 @@ Public Class ProjetLogique2019
             Next
 
             If nbvar = n * n Then
-                TextBoxMain.AppendText(vbCrLf + " - Nombre de variable vérifiées : ok : " + nbvar.ToString)
+                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + " - Nombre de variable vérifiées : ok : " + nbvar.ToString})
             Else
-                TextBoxMain.AppendText(vbCrLf + " - Nombre de variable vérifié : erreur : " + nbvar.ToString)
+                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + " - Nombre de variable vérifié : erreur : " + nbvar.ToString})
                 For i = 1 To n * n
                     If Not tabvar(i) Then
-                        TextBoxMain.AppendText(vbCrLf + " * La variable " + i.ToString + " est manquante")
+                        TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + " * La variable " + i.ToString + " est manquante"})
                     End If
                 Next
                 For i = n * n + 1 To n * n * 2 - 2
                     If tabvar(i) Then
-                        TextBoxMain.AppendText(vbCrLf + " * La variable " + i.ToString + " est de trop")
+                        TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + " * La variable " + i.ToString + " est de trop"})
                     End If
                 Next
             End If
         Catch ex As Exception
-            TextBoxMain.AppendText("Erreur lors de la verification des variables du fichier Dimacs" + vbCrLf + ex.Message)
+            TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Erreur lors de la verification des variables du fichier Dimacs" + vbCrLf + ex.Message})
         End Try
 
         ButtonODi.ForeColor = Color.DarkGreen
@@ -504,8 +597,8 @@ Public Class ProjetLogique2019
         ButtonSatSolveOnline.ForeColor = Color.Brown
         ButtonSatSolvePerso.ForeColor = Color.Brown
         ButtonCompleteTakuzu.ForeColor = Color.Brown
-
-    End Sub
+        Invoke(DisableStopDelegate)
+    End Function
 #End Region
 
 #Region "Format 3-Sat"
@@ -514,9 +607,20 @@ Public Class ProjetLogique2019
             TextBoxMain.AppendText(vbCrLf + " * Vous devez creer d'abord un fichier au format Dimacs n-Sat")
             Exit Sub
         End If
-
+        If (MyWorker.IsAlive) Then
+            MsgBox("Une autre opération est déjà en cours", vbInformation)
+        Else
+            MyWorker = New Thread(AddressOf Create3Sat)
+            MyWorker.Start()
+            EnableStop()
+        End If
+    End Sub
+    Public Function Create3Sat()
         Dim writer = CreateTextFile("Takuzu_3Sat.txt")
-        If writer Is Nothing Then Exit Sub
+        If writer Is Nothing Then
+            Invoke(DisableStopDelegate)
+            Exit Function
+        End If
 
         'Calcul du nouveau nombre de variable et de clause et entete
         Dim reader = New StreamReader(Application.StartupPath() + "\Takuzu_Dimacs.txt")
@@ -543,7 +647,7 @@ Public Class ProjetLogique2019
         End While
 
         reader.Close()
-        TextBoxMain.AppendText(vbCrLf + " - Calcul pour 3Sat :" + vbCrLf + " - - nombre de variables : " + nbvar.ToString + vbCrLf + " - - nombre de clause :" + nbclause.ToString)
+        TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + " - Calcul pour 3Sat :" + vbCrLf + " - - nombre de variables : " + nbvar.ToString + vbCrLf + " - - nombre de clause :" + nbclause.ToString})
         writer.WriteLine("p cnf {0} {1}", nbvar, nbclause)
 
         'Ecriture du corps
@@ -586,8 +690,8 @@ Public Class ProjetLogique2019
         ButtonSatSolveOnline.ForeColor = Color.Brown
         ButtonSatSolvePerso.ForeColor = Color.Brown
         ButtonCompleteTakuzu.ForeColor = Color.Brown
-
-    End Sub
+        Invoke(DisableStopDelegate)
+    End Function
 #End Region
 
 #Region "Solver online"
@@ -603,6 +707,16 @@ Public Class ProjetLogique2019
                 Exit Sub
             End If
         End If
+        If (MyWorker.IsAlive) Then
+            MsgBox("Une autre opération est déjà en cours", vbInformation)
+        Else
+            MyWorker = New Thread(AddressOf ResolveMiniSat)
+            MyWorker.Start()
+            EnableStop()
+        End If
+    End Sub
+    Public Function ResolveMiniSat()
+
         My.Computer.FileSystem.WriteAllBytes(Path.GetTempPath & "\Minisat5.exe", My.Resources.minisat5, False)
 
         'Run du Sat externe
@@ -625,30 +739,34 @@ Public Class ProjetLogique2019
         End Using
         Dim s = Split(sOutput, vbCrLf)
         sOutput = s(1) + vbCrLf + s(2) + vbCrLf + s(8) + vbCrLf + s(9) + vbCrLf + s(10) + vbCrLf + s(11) + vbCrLf + s(13) + vbCrLf + s(14) + vbCrLf + s(16) + vbCrLf + s(17) + vbCrLf + s(18) + vbCrLf + s(19) + vbCrLf + s(20) + vbCrLf + s(21) + vbCrLf + s(22) + vbCrLf + s(23) + vbCrLf + s(24) + vbCrLf + s(47) + vbCrLf + s(48) + vbCrLf + s(49) + vbCrLf
-        TextBoxMain.AppendText(sOutput)
+        TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, sOutput})
 
         'Recuperation de la solution du Sat externe
         If s(49) = "s SATISFIABLE" Then
 
             Dim writer = CreateTextFile("Takuzu_Solved_Dimacs.txt")
-            If writer Is Nothing Then Exit Sub
+            If writer Is Nothing Then
+                Invoke(DisableStopDelegate)
+                Exit Function
+            End If
 
 
             Dim i = 50
             While s(i) <> ""
-                TextBoxMain.AppendText(vbCrLf + s(i))
+                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + s(i)})
                 writer.WriteLine(s(i).Substring(2))
                 i += 1
             End While
             writer.Close()
-            TextBoxMain.AppendText("------------------")
+            TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, "------------------"})
             ButtonSatSolveOnline.ForeColor = Color.DarkGreen
             ButtonSatSolvePerso.ForeColor = Color.DarkGreen
             ButtonCompleteTakuzu.ForeColor = Color.Brown
         Else
-            TextBoxMain.AppendText("------------------" + vbCrLf + "Il n'y a pas de solutions, la grille de départ n'est peut-etre pas valide")
+            TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, "------------------" + vbCrLf + "Il n'y a pas de solutions, la grille de départ n'est peut-etre pas valide"})
         End If
-    End Sub
+        Invoke(DisableStopDelegate)
+    End Function
 #End Region
 
 #Region "Solver perso"
@@ -676,7 +794,6 @@ Public Class ProjetLogique2019
     Public nbClause As Integer
 
     Private Sub ButtonSatSolvePerso_Click(sender As Object, e As EventArgs) Handles ButtonSatSolvePerso.Click
-        'Lecture du fichier
         If CheckRes3Sat.Checked Then
             If Not My.Computer.FileSystem.FileExists(Application.StartupPath() + "\Takuzu_3Sat.txt") Then
                 TextBoxMain.AppendText(vbCrLf + " * Vous devez creer d'abord un fichier au format Dimacs 3-Sat")
@@ -688,7 +805,17 @@ Public Class ProjetLogique2019
                 Exit Sub
             End If
         End If
+        If (MyWorker.IsAlive) Then
+            MsgBox("Une autre opération est déjà en cours", vbInformation)
+        Else
+            MyWorker = New Thread(AddressOf ResolvePerso)
+            MyWorker.Start()
+            EnableStop()
+        End If
+    End Sub
 
+    Public Function ResolvePerso()
+        'Lecture du fichier
         Dim reader
         If CheckRes3Sat.Checked Then
             reader = New StreamReader("Takuzu_3Sat.txt")
@@ -697,8 +824,9 @@ Public Class ProjetLogique2019
         End If
         Dim s = reader.ReadLine().Trim.Split(" ")
         If (s(0) <> "p" And s(1) <> "cnf") Then
-            TextBoxMain.AppendText(vbCrLf + "Erreur fichier d'entrée")
-            Exit Sub
+            TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Erreur fichier d'entrée"})
+            Invoke(DisableStopDelegate)
+            Exit Function
         End If
 
         Dim nbVar = CInt(s(2))
@@ -747,7 +875,7 @@ resolutionDPLL:
                     If f(i).Length = 1 Then
                         Dim a = Math.Abs(f(i)(0))
                         If variables(a) = -1 Then
-                            TextBoxMain.AppendText(vbCrLf + "Validation par clause unitaire de " + f(i)(0).ToString)
+                            TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Validation par clause unitaire de " + f(i)(0).ToString})
                             If f(i)(0) >= 0 Then
                                 variables(a) = 1
                             Else
@@ -792,7 +920,7 @@ resolutionDPLL:
                             Else
                                 RemoveAt(f(i), j)
                                 If f(i) Is Nothing Then
-                                    TextBoxMain.AppendText(vbCrLf + "Clause vide, retour en arrière")
+                                    TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Clause vide, retour en arrière"})
                                     GoTo unsatisfiable
                                 End If
                                 j -= 1
@@ -807,7 +935,7 @@ resolutionDPLL:
             'Plus de resolution possible, attribution arbitraire
             For i = 1 To nbVar
                 If variables(i) = -1 Then
-                    TextBoxMain.AppendText(vbCrLf + "Attribution arbitraire de " + i.ToString + " -> vrai")
+                    TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Attribution arbitraire de " + i.ToString + " -> vrai"})
                     Empiler(i, save)
                     variables(i) = 1
                     resolution = True
@@ -818,30 +946,33 @@ resolutionDPLL:
         End While
 
         'Fin et conclusion du DPLL
-        TextBoxMain.AppendText(vbCrLf + "Solvé !" + vbCrLf + "Variables vraies :")
+        TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Solvé !" + vbCrLf + "Variables vraies :"})
         For i = 1 To variables.Length - 1
             If variables(i) = 1 Then
-                TextBoxMain.AppendText(i)
-                TextBoxMain.AppendText(" ")
+                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, i.ToString})
+                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, " "})
             End If
         Next
-        TextBoxMain.AppendText(vbCrLf + "Variables fausses :" + vbCrLf)
+        TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Variables fausses :" + vbCrLf})
         For i = 1 To variables.Length - 1
             If variables(i) = 0 Then
-                TextBoxMain.AppendText(i)
-                TextBoxMain.AppendText(" ")
+                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, i.ToString})
+                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, " "})
             End If
         Next
-        TextBoxMain.AppendText(vbCrLf + "Les autres variables sont libres : " + vbCrLf)
+        TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Les autres variables sont libres : " + vbCrLf})
         For i = 1 To variables.Length - 1
             If variables(i) = -1 Then
-                TextBoxMain.AppendText(i)
-                TextBoxMain.AppendText(" ")
+                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, i.ToString})
+                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, " "})
             End If
         Next
 
         Dim writer = CreateTextFile("Takuzu_Solved_Dimacs.txt")
-        If writer Is Nothing Then Exit Sub
+        If writer Is Nothing Then
+            DisableStop()
+            Exit Function
+        End If
 
         For j = 0 To nbVar
             If variables(j) = 1 Then
@@ -854,24 +985,25 @@ resolutionDPLL:
         ButtonSatSolveOnline.ForeColor = Color.DarkGreen
         ButtonSatSolvePerso.ForeColor = Color.DarkGreen
         ButtonCompleteTakuzu.ForeColor = Color.Brown
+        Invoke(DisableStopDelegate)
 
-        Exit Sub
+        Exit Function
 
 
 unsatisfiable:
         If (save.suiv Is Nothing) Then
-            TextBoxMain.AppendText(vbCrLf + "Insatisfaisable. La grille de depart n'est peut etre pas valide")
+            TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Insatisfaisable. La grille de depart n'est peut etre pas valide"})
         Else
             Dim a = Depiler(save)
-            TextBoxMain.AppendText(vbCrLf + "Attribution arbitraire de " + a.ToString + " -> faux")
+            TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Attribution arbitraire de " + a.ToString + " -> faux"})
             variables(a) = 0
             GoTo resolutionDPLL
         End If
-    End Sub
+    End Function
 
     Private Function pos(a As Integer) As Int16
         If a = 0 Then
-            TextBoxMain.AppendText(vbCrLf + "Erreur : 0 s'est retrouvé en variable")
+            TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Erreur : 0 s'est retrouvé en variable"})
         End If
         If a >= 0 Then
             Return 1
@@ -1009,11 +1141,15 @@ unsatisfiable:
         Dim writer
         Try
             My.Computer.FileSystem.WriteAllText(Application.StartupPath() + "\" + path, "", False)
-            TextBoxMain.AppendText(vbCrLf + "Fichier créé : " + path)
             writer = New StreamWriter(Application.StartupPath() + "\" + path)
         Catch ex As Exception
             TextBoxMain.AppendText(vbCrLf + ex.Message)
             Return Nothing
+        End Try
+        Try
+            TextBoxMain.AppendText(vbCrLf + "Fichier créé : " + path)
+        Catch ex As Exception
+            TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Fichier créé : " + path})
         End Try
         Return writer
     End Function
@@ -1061,6 +1197,8 @@ unsatisfiable:
 
         Return (a * n + b + 1).ToString
     End Function
+
+
 
 #End Region
 
