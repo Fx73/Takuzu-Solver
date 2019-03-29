@@ -113,20 +113,6 @@ Public Class ProjetLogique2019
         End If
     End Sub
 
-    Private Sub ButtonStop_Click(sender As Object, e As EventArgs) Handles ButtonStop.Click
-        If MyWorker.ThreadState = ThreadState.Running Then
-            MyWorker.Suspend()
-            ButtonStop.Text = "Redo"
-            MyProgressBar.MarqueeAnimationSpeed = 0
-            Exit Sub
-        End If
-        If MyWorker.ThreadState = ThreadState.Suspended Then
-            MyWorker.Resume()
-            ButtonStop.Text = "Stop"
-            MyProgressBar.MarqueeAnimationSpeed = 20
-            Exit Sub
-        End If
-    End Sub
     Private Sub CheckRes3Sat_CheckedChanged(sender As Object, e As EventArgs) Handles CheckRes3Sat.CheckedChanged
         If CheckRes3Sat.Checked Then
             If Button3sat.ForeColor = Color.Black Then
@@ -161,6 +147,7 @@ Public Class ProjetLogique2019
     End Sub
     Private EnableStopDelegate As New SetStopDelegate(AddressOf EnableStop)
     Private Sub EnableStop()
+        MyProgressBar.Style = ProgressBarStyle.Marquee
         MyProgressBar.MarqueeAnimationSpeed = 20
         ButtonStop.Text = "Stop"
         ButtonStop.Enabled = True
@@ -168,9 +155,23 @@ Public Class ProjetLogique2019
     Private DisableStopDelegate As New SetStopDelegate(AddressOf DisableStop)
     Private Sub DisableStop()
         MyProgressBar.MarqueeAnimationSpeed = 0
+        MyProgressBar.Style = ProgressBarStyle.Continuous
         ButtonStop.Enabled = False
     End Sub
-
+    Private Sub ButtonStop_Click(sender As Object, e As EventArgs) Handles ButtonStop.Click
+        If MyWorker.ThreadState = ThreadState.Running Then
+            MyWorker.Suspend()
+            ButtonStop.Text = "Redo"
+            MyProgressBar.MarqueeAnimationSpeed = 0
+            Exit Sub
+        End If
+        If MyWorker.ThreadState = ThreadState.Suspended Then
+            MyWorker.Resume()
+            ButtonStop.Text = "Stop"
+            MyProgressBar.MarqueeAnimationSpeed = 20
+            Exit Sub
+        End If
+    End Sub
 #End Region
 
 #Region "Grille de Takuzu"
@@ -211,7 +212,14 @@ Public Class ProjetLogique2019
             Exit Sub
         End If
         If (MyWorker.IsAlive) Then
-            MsgBox("Une autre opération est déjà en cours", vbInformation)
+            If MyWorker.ThreadState = ThreadState.Suspended Then
+
+                MyWorker = New Thread(AddressOf CreateConj)
+                MyWorker.Start()
+                EnableStop()
+            Else
+                MsgBox("Une autre opération est déjà en cours", vbInformation)
+            End If
         Else
             MyWorker = New Thread(AddressOf CreateConj)
             MyWorker.Start()
@@ -490,7 +498,15 @@ Public Class ProjetLogique2019
             Exit Sub
         End If
         If (MyWorker.IsAlive) Then
-            MsgBox("Une autre opération est déjà en cours", vbInformation)
+            If MyWorker.ThreadState = ThreadState.Suspended Then
+                MyWorker.Resume()
+                MyWorker.Abort()
+                MyWorker = New Thread(AddressOf CreateDimacs)
+                MyWorker.Start()
+                EnableStop()
+            Else
+                MsgBox("Une autre opération est déjà en cours", vbInformation)
+            End If
         Else
             MyWorker = New Thread(AddressOf CreateDimacs)
             MyWorker.Start()
@@ -608,7 +624,15 @@ Public Class ProjetLogique2019
             Exit Sub
         End If
         If (MyWorker.IsAlive) Then
-            MsgBox("Une autre opération est déjà en cours", vbInformation)
+            If MyWorker.ThreadState = ThreadState.Suspended Then
+                MyWorker.Resume()
+                MyWorker.Abort()
+                MyWorker = New Thread(AddressOf Create3Sat)
+                MyWorker.Start()
+                EnableStop()
+            Else
+                MsgBox("Une autre opération est déjà en cours", vbInformation)
+            End If
         Else
             MyWorker = New Thread(AddressOf Create3Sat)
             MyWorker.Start()
@@ -708,7 +732,15 @@ Public Class ProjetLogique2019
             End If
         End If
         If (MyWorker.IsAlive) Then
-            MsgBox("Une autre opération est déjà en cours", vbInformation)
+            If MyWorker.ThreadState = ThreadState.Suspended Then
+                MyWorker.Resume()
+                MyWorker.Abort()
+                MyWorker = New Thread(AddressOf ResolveMiniSat)
+                MyWorker.Start()
+                EnableStop()
+            Else
+                MsgBox("Une autre opération est déjà en cours", vbInformation)
+            End If
         Else
             MyWorker = New Thread(AddressOf ResolveMiniSat)
             MyWorker.Start()
@@ -806,7 +838,15 @@ Public Class ProjetLogique2019
             End If
         End If
         If (MyWorker.IsAlive) Then
-            MsgBox("Une autre opération est déjà en cours", vbInformation)
+            If MyWorker.ThreadState = ThreadState.Suspended Then
+                MyWorker.Resume()
+                MyWorker.Abort()
+                MyWorker = New Thread(AddressOf ResolvePerso)
+                MyWorker.Start()
+                EnableStop()
+            Else
+                MsgBox("Une autre opération est déjà en cours", vbInformation)
+            End If
         Else
             MyWorker = New Thread(AddressOf ResolvePerso)
             MyWorker.Start()
@@ -1143,7 +1183,11 @@ unsatisfiable:
             My.Computer.FileSystem.WriteAllText(Application.StartupPath() + "\" + path, "", False)
             writer = New StreamWriter(Application.StartupPath() + "\" + path)
         Catch ex As Exception
-            TextBoxMain.AppendText(vbCrLf + ex.Message)
+            Try
+                TextBoxMain.AppendText(vbCrLf + ex.Message)
+            Catch
+                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + ex.Message})
+            End Try
             Return Nothing
         End Try
         Try

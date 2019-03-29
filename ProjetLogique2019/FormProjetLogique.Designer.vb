@@ -191,6 +191,7 @@ Partial Class ProjetLogique2019
         Me.MyProgressBar.MarqueeAnimationSpeed = 0
         Me.MyProgressBar.Name = "MyProgressBar"
         Me.MyProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee
+        Me.MyProgressBar.Value = 100
         '
         'ButtonStop
         '
