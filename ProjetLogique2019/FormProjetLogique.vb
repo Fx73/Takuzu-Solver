@@ -804,17 +804,19 @@ Public Class ProjetLogique2019
 #Region "Solver perso"
     Public Class Pile
         Public val As Int16 = 0
+        Public savenbClause As Integer
         Public b As Boolean = True
         Public saveVar() As Int16
         Public saveClause()() As Integer
         Public suiv As Pile = Nothing
 
-        Public Function noeud(ByVal i As Int16, ByVal sVar() As Int16, ByVal sClause()() As Integer) As Pile
+        Public Function noeud(ByVal i As Int16, ByVal snbClause As Integer, ByVal sVar() As Int16, ByVal sClause()() As Integer) As Pile
             Dim p = New Pile
             With p
                 val = i
                 saveVar = sVar
                 saveClause = sClause
+                savenbClause = snbClause
             End With
             Return p
         End Function
@@ -935,6 +937,7 @@ resolutionDPLL:
                             End If
                             i -= 1
                         Else
+                            TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Clause unitaire contradictoire : " + f(i)(0).ToString})
                             GoTo unsatisfiable
                         End If
                     End If
@@ -986,28 +989,6 @@ resolutionDPLL:
         End While
 
         'Fin et conclusion du DPLL
-        TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Solvé !" + vbCrLf + "Variables vraies :"})
-        For i = 1 To variables.Length - 1
-            If variables(i) = 1 Then
-                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, i.ToString})
-                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, " "})
-            End If
-        Next
-        TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Variables fausses :" + vbCrLf})
-        For i = 1 To variables.Length - 1
-            If variables(i) = 0 Then
-                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, i.ToString})
-                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, " "})
-            End If
-        Next
-        TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Les autres variables sont libres : " + vbCrLf})
-        For i = 1 To variables.Length - 1
-            If variables(i) = -1 Then
-                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, i.ToString})
-                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, " "})
-            End If
-        Next
-
         Dim writer = CreateTextFile("Takuzu_Solved_Dimacs.txt")
         If writer Is Nothing Then
             DisableStop()
@@ -1022,6 +1003,80 @@ resolutionDPLL:
             End If
         Next
         writer.Close()
+
+        Dim ecrire As Boolean = True
+        TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Solvé !" + vbCrLf + "Variables vraies :"})
+        For i = 1 To n * n
+            If variables(i) = 1 Then
+                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, i.ToString + " "})
+            End If
+        Next
+        For i = n * n + 1 To variables.Length - 1
+            If variables(i) = 1 Then
+                If ecrire Then
+                    TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, ", " + i.ToString + " à "})
+                    ecrire = False
+                End If
+            Else
+                If Not ecrire Then
+                    TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, i.ToString})
+                    ecrire = True
+                End If
+            End If
+        Next
+        If Not ecrire Then
+            TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, (variables.Length - 1).ToString})
+            ecrire = True
+        End If
+
+        TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Variables fausses :" + vbCrLf})
+        For i = 1 To n * n
+            If variables(i) = 0 Then
+                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, i.ToString + " "})
+            End If
+        Next
+        For i = n * n + 1 To variables.Length - 1
+            If variables(i) = 0 Then
+                If ecrire Then
+                    TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, ", " + i.ToString + " à "})
+                    ecrire = False
+                End If
+            Else
+                If Not ecrire Then
+                    TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, i.ToString})
+                    ecrire = True
+                End If
+            End If
+        Next
+        If Not ecrire Then
+            TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, (variables.Length - 1).ToString.ToString})
+            ecrire = True
+        End If
+
+        TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Les autres variables sont libres : " + vbCrLf})
+        For i = 1 To n * n
+            If variables(i) = -1 Then
+                TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, i.ToString + " "})
+            End If
+        Next
+        For i = n * n + 1 To variables.Length - 1
+            If variables(i) = -1 Then
+                If ecrire Then
+                    TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, ", " + i.ToString + " à "})
+                    ecrire = False
+                End If
+            Else
+                If Not ecrire Then
+                    TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, i.ToString})
+                    ecrire = True
+                End If
+            End If
+        Next
+        If Not ecrire Then
+            TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, (variables.Length - 1).ToString.ToString})
+            ecrire = True
+        End If
+
         ButtonSatSolveOnline.ForeColor = Color.DarkGreen
         ButtonSatSolvePerso.ForeColor = Color.DarkGreen
         ButtonCompleteTakuzu.ForeColor = Color.Brown
@@ -1054,12 +1109,13 @@ unsatisfiable:
 
     Private Function Empiler(i As Integer, ByRef p As Pile)
         Dim old = p
-        p = p.noeud(i, variables.Clone, f)
+        p = p.noeud(i, nbClause, variables.Clone, f)
         p.suiv = old
     End Function
 
     Private Function Depiler(ByRef p As Pile) As Int16
         Dim a = p.suiv.val
+        nbClause = p.suiv.savenbClause
         For i = 1 To variables.Length - 1
             variables(i) = p.suiv.saveVar(i)
         Next
