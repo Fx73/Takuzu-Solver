@@ -3,7 +3,6 @@ Imports System.IO
 Imports System.Threading
 
 
-#Const Debug = False
 Public Class ProjetLogique2019
     Public n As Integer = TailledeGrille() 'taille de grille
     Dim pageTakuzuini As TakuzuGrid = New TakuzuGrid With {.isinit = True}
@@ -267,8 +266,8 @@ Public Class ProjetLogique2019
             Next
 
             Dim tab(n - 1) As Boolean
+            'regle 2 + 3 non trouvée
             If CheckReglesMix.Checked = True Then
-                'regle 2 + 3 non trouvée
                 TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + " - - Ecriture de la regle 2 + 3 "})
                 For i1 = 0 To n - 2
                     For i2 = i1 + 1 To n - 1
@@ -911,7 +910,7 @@ resolutionDPLL:
         While (nbClause > 0)
             Dim i, j As Integer
             While (resolution)
-                'Clauses unitaires -> Enregestriment de la variable et retrait de l'ensemble de clauses
+                'Clauses unitaires -> Enregistrement de la variable et retrait de l'ensemble de clauses
                 i = 0
                 While (i < nbClause)
                     If f(i).Length = 1 Then
@@ -997,11 +996,12 @@ resolutionDPLL:
 
         For j = 0 To nbVar
             If variables(j) = 1 Then
-                writer.WriteLine(variables(j).ToString + " ")
+                writer.Write(j.ToString + " ")
             ElseIf variables(j) = 0 Then
-                writer.WriteLine("-" + variables(j).ToString + " ")
+                writer.Write("-" + j.ToString + " ")
             End If
         Next
+        writer.Write("0")
         writer.Close()
 
         Dim ecrire As Boolean = True
