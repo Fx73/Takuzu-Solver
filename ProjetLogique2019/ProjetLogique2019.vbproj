@@ -160,20 +160,13 @@
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="ProjetLogique2019_TemporaryKey.pfx" />
-    <None Include="Resources\Mot Croisée.docx" />
-    <None Include="Resources\Pré-rendu INF402.docx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Rapport INF402 Takuzu.pdf" />
     <None Include="Resources\TakuzuIcone.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\cryptominisat5-win-amd64-nogauss.exe" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Icon1.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\TakuzuIcone2.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

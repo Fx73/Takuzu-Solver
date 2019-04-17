@@ -7,6 +7,7 @@ Public Class TakuzuGrid
 
     Private Sub TakuzuGrid_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         'Definition de la grille de debut
+        Me.Text = "Grille de takuzu initiale"
         If Not My.Computer.FileSystem.FileExists(Application.StartupPath() + "\Takuzu_Grille.txt") Then
             ComboBoxN_SelectedIndexChanged()
             Exit Sub
@@ -40,6 +41,7 @@ Public Class TakuzuGrid
 
     Public Sub Loadcomplete()
         'Definition de la grille de fin
+        Me.Text = "Grille de takuzu resolue"
         Dim reader = New StreamReader(Application.StartupPath() + "\Takuzu_Solved_Dimacs.txt")
         Dim resvar = Split(reader.ReadToEnd.Replace(vbCr, "").Replace(vbLf, ""), " ")
         reader.Close()

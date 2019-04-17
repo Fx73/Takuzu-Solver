@@ -73,9 +73,9 @@ Namespace My.Resources
         '''<summary>
         '''  Recherche une ressource localisée de type System.Byte[].
         '''</summary>
-        Friend ReadOnly Property Pré_rendu_INF402() As Byte()
+        Friend ReadOnly Property Rapport_INF402_Takuzu() As Byte()
             Get
-                Dim obj As Object = ResourceManager.GetObject("Pré_rendu_INF402", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("Rapport_INF402_Takuzu", resourceCulture)
                 Return CType(obj,Byte())
             End Get
         End Property

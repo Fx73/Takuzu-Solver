@@ -40,8 +40,8 @@ Public Class ProjetLogique2019
 #Region "Boutons descriptifs"
     Private Sub ButtonPreRap_Click(sender As Object, e As EventArgs) Handles ButtonPreRap.Click
         Try
-            My.Computer.FileSystem.WriteAllBytes(Path.GetTempPath & "\Prerendutemp.docx", My.Resources.Pré_rendu_INF402, False)
-            Process.Start(Path.GetTempPath & "\Prerendutemp.docx")
+            My.Computer.FileSystem.WriteAllBytes(Path.GetTempPath & "\Prerendutemp.pdf", My.Resources.Rapport_INF402_Takuzu, False)
+            Process.Start(Path.GetTempPath & "\Prerendutemp.pdf")
             TextBoxMain.AppendText(vbCrLf + "Pre-rendu chargé et ouvert correctement")
         Catch ex As Exception
             TextBoxMain.AppendText(vbCrLf + ex.Message)

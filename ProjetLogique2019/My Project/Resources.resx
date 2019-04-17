@@ -121,10 +121,10 @@
   <data name="minisat5" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cryptominisat5-win-amd64-nogauss.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Pré_rendu_INF402" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Pré-rendu INF402.docx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="TakuzuIcone" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\TakuzuIcone.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Rapport_INF402_Takuzu" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Rapport INF402 Takuzu.pdf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>
