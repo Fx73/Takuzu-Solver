@@ -169,7 +169,7 @@
     <value>2</value>
   </data>
   <data name="ButtonPreRap.Text" xml:space="preserve">
-    <value>Accéder au pré-rapport</value>
+    <value>Accéder au rapport</value>
   </data>
   <data name="&gt;&gt;ButtonPreRap.Name" xml:space="preserve">
     <value>ButtonPreRap</value>
