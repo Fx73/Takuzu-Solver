@@ -226,7 +226,7 @@ Public Class ProjetLogique2019
         End If
     End Sub
 
-    Public Function CreateConj()
+    Public Sub CreateConj()
 
 
         Using writer = CreateTextFile("Takuzu_Conjonctive.txt")
@@ -428,16 +428,16 @@ Public Class ProjetLogique2019
         ButtonCompleteTakuzu.ForeColor = Color.Brown
         Invoke(DisableStopDelegate)
 
-    End Function
+    End Sub
 
-    Private Function Init3(ByRef tab() As Boolean)
+    Private Sub Init3(ByRef tab() As Boolean)
         For k = 0 To n / 2
             tab(k) = True
         Next
         For k = n / 2 + 1 To n - 1
             tab(k) = False
         Next
-    End Function
+    End Sub
     Private Function Increment3(ByRef tab() As Boolean) As Boolean
         For i = 0 To tab.Length - 1
             If (tab(i) = False) Then
@@ -478,15 +478,15 @@ Public Class ProjetLogique2019
         Next
         Return -1
     End Function
-    Private Function Increment(ByRef tab() As Boolean)
+    Private Sub Increment(ByRef tab() As Boolean)
         For i = 0 To tab.Length - 1
             If (tab(i) = False) Then
                 tab(i) = True
-                Exit Function
+                Exit Sub
             End If
             tab(i) = False
         Next
-    End Function
+    End Sub
 
 #End Region
 
@@ -512,12 +512,12 @@ Public Class ProjetLogique2019
             EnableStop()
         End If
     End Sub
-    Public Function CreateDimacs()
+    Public Sub CreateDimacs()
         Dim reader = New StreamReader(Application.StartupPath() + "\Takuzu_Conjonctive.txt")
         Dim writer = CreateTextFile("Takuzu_Dimacs.txt")
         If writer Is Nothing Then
             Invoke(DisableStopDelegate)
-            Exit Function
+            Exit Sub
         End If
 
         'Ecriture de l'en-tete
@@ -613,7 +613,7 @@ Public Class ProjetLogique2019
         ButtonSatSolvePerso.ForeColor = Color.Brown
         ButtonCompleteTakuzu.ForeColor = Color.Brown
         Invoke(DisableStopDelegate)
-    End Function
+    End Sub
 #End Region
 
 #Region "Format 3-Sat"
@@ -638,11 +638,11 @@ Public Class ProjetLogique2019
             EnableStop()
         End If
     End Sub
-    Public Function Create3Sat()
+    Public Sub Create3Sat()
         Dim writer = CreateTextFile("Takuzu_3Sat.txt")
         If writer Is Nothing Then
             Invoke(DisableStopDelegate)
-            Exit Function
+            Exit Sub
         End If
 
         'Calcul du nouveau nombre de variable et de clause et entete
@@ -714,7 +714,7 @@ Public Class ProjetLogique2019
         ButtonSatSolvePerso.ForeColor = Color.Brown
         ButtonCompleteTakuzu.ForeColor = Color.Brown
         Invoke(DisableStopDelegate)
-    End Function
+    End Sub
 #End Region
 
 #Region "Solver online"
@@ -746,7 +746,7 @@ Public Class ProjetLogique2019
             EnableStop()
         End If
     End Sub
-    Public Function ResolveMiniSat()
+    Public Sub ResolveMiniSat()
 
         My.Computer.FileSystem.WriteAllBytes(Path.GetTempPath & "\Minisat5.exe", My.Resources.minisat5, False)
 
@@ -778,7 +778,7 @@ Public Class ProjetLogique2019
             Dim writer = CreateTextFile("Takuzu_Solved_Dimacs.txt")
             If writer Is Nothing Then
                 Invoke(DisableStopDelegate)
-                Exit Function
+                Exit Sub
             End If
 
 
@@ -797,7 +797,7 @@ Public Class ProjetLogique2019
             TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, "------------------" + vbCrLf + "Il n'y a pas de solutions, la grille de départ n'est peut-etre pas valide"})
         End If
         Invoke(DisableStopDelegate)
-    End Function
+    End Sub
 #End Region
 
 #Region "Solver perso"
@@ -855,7 +855,7 @@ Public Class ProjetLogique2019
         End If
     End Sub
 
-    Public Function ResolvePerso()
+    Public Sub ResolvePerso()
         'Lecture du fichier
         Dim reader
         If CheckRes3Sat.Checked Then
@@ -867,7 +867,7 @@ Public Class ProjetLogique2019
         If (s(0) <> "p" And s(1) <> "cnf") Then
             TextBoxMain.Invoke(SetText, New Object() {TextBoxMain, vbCrLf + "Erreur fichier d'entrée"})
             Invoke(DisableStopDelegate)
-            Exit Function
+            Exit Sub
         End If
 
         Dim nbVar = CInt(s(2))
@@ -991,7 +991,7 @@ resolutionDPLL:
         Dim writer = CreateTextFile("Takuzu_Solved_Dimacs.txt")
         If writer Is Nothing Then
             DisableStop()
-            Exit Function
+            Exit Sub
         End If
 
         For j = 0 To nbVar
@@ -1082,7 +1082,7 @@ resolutionDPLL:
         ButtonCompleteTakuzu.ForeColor = Color.Brown
         Invoke(DisableStopDelegate)
 
-        Exit Function
+        Exit Sub
 
 
 unsatisfiable:
@@ -1094,7 +1094,7 @@ unsatisfiable:
             variables(a) = 0
             GoTo resolutionDPLL
         End If
-    End Function
+    End Sub
 
     Private Function pos(a As Integer) As Int16
         If a = 0 Then
@@ -1107,11 +1107,11 @@ unsatisfiable:
         End If
     End Function
 
-    Private Function Empiler(i As Integer, ByRef p As Pile)
+    Private Sub Empiler(i As Integer, ByRef p As Pile)
         Dim old = p
         p = p.noeud(i, nbClause, variables.Clone, f)
         p.suiv = old
-    End Function
+    End Sub
 
     Private Function Depiler(ByRef p As Pile) As Int16
         Dim a = p.suiv.val

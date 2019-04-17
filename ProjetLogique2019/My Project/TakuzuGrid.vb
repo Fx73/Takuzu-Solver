@@ -67,7 +67,7 @@ Public Class TakuzuGrid
         GridVerif()
     End Sub
 
-    Private Function CreateButtonGrid()
+    Private Sub CreateButtonGrid()
         PanelButtons.Controls.Clear()
         For i As Integer = 0 To n - 1
             For j As Integer = 0 To n - 1
@@ -88,7 +88,7 @@ Public Class TakuzuGrid
                 PanelButtons.Controls.Add(mybutton)
             Next
         Next
-    End Function
+    End Sub
 
     Private Sub ComboBoxN_SelectedIndexChanged() Handles ComboBoxN.SelectedIndexChanged
         If ComboBoxN.Text(1).ToString = "x" Then
