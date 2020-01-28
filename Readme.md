@@ -1,10 +1,13 @@
-Projet Logique : Takuzu
+<b>Projet Logique : Takuzu </b>
 
 Pour compiler (sous Windows obligatoirement):
 
-Telecharger le projet et le décompresser
+Telecharger le projet et le dÃ©compresser
 
-Ouvrir l'invite de commande et se placer dans le repertoire de projet (où doit se trouver "ProjetLogique2019.sln")
+Ouvrir l'invite de commande et se placer dans le repertoire de projet (oÃ¹ doit se trouver "ProjetLogique2019.sln")
 
 Executer :
  C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild "ProjetLogique2019.sln" /p:Configuration=Release
+ 
+Le depot original est disponible sur Azure:
+https://dev.azure.com/CochonCorp/ProjetLogique2019
