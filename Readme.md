@@ -12,12 +12,14 @@ L'interface réalisée permet de voir les différentes étapes de résolution.
 <h2> Compilation </h2>
 <i>Il s'agit d'une application .Net, donc compilable et executable sous Windows.</i>
 
-Telecharger le projet et le décompresser
+- Telecharger le projet et le décompresser
 
-Ouvrir l'invite de commande et se placer dans le repertoire de projet (où doit se trouver "ProjetLogique2019.sln")
+- Ouvrir l'invite de commande et se placer dans le repertoire de projet (où doit se trouver "ProjetLogique2019.sln")
 
-Executer :
- <i>C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild "ProjetLogique2019.sln" /p:Configuration=Release</i>
+- Executer :
+
+      C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild "ProjetLogique2019.sln" /p:Configuration=Release
+   Ou tout autre version du framework disponible (à partir du v4)
  
  
 Le depot original est disponible sur Azure:
