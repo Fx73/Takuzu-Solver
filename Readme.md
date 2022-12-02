@@ -9,6 +9,18 @@ Les règles du jeu et de logiques sont présentes dans le rapport, accessible vi
 
 L'interface réalisée permet de voir les différentes étapes de résolution.
 
+
+<h2> Fonctionnement </h2>
+
+On entre la grille à resoudre d'abord.
+
+La résolution se fait en plusieurs étapes :
+ - Création de l'ensemble de règles logiques à résoudre
+ - Conversion des règles vers un format adapté au SAT
+ - Résolution par un SAT au choix (2 inclus : 1 avec l'algorithme de base codé dans le programme, 1 récupéré ici : https://www.msoos.org/cryptominisat5, compilé et appelé dans les ressources)
+ 
+La grille résolue peut-être affichée.
+
 <h2> Compilation </h2>
 <i>Il s'agit d'une application .Net, donc compilable et executable sous Windows.</i>
 
